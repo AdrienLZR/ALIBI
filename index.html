@@ -28,6 +28,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:800;display:flex;align-items:cen
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
 .dl-btn{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:16px 40px;background:var(--red);color:#fff;text-decoration:none;font-family:'Courier New',monospace;font-size:.78rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);box-shadow:0 8px 40px rgba(224,16,46,.40);transition:filter .2s,transform .18s,box-shadow .2s;-webkit-tap-highlight-color:transparent;}
 .dl-btn:hover,.dl-btn:active{filter:brightness(1.12);transform:translateY(-2px);box-shadow:0 14px 50px rgba(224,16,46,.55);}
+.dl-btn-group{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:0;}
+.dl-btn-disabled{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:14px 32px;background:transparent;color:rgba(221,214,200,.22);border:1px solid rgba(221,214,200,.12);font-family:'Courier New',monospace;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);cursor:not-allowed;}
 .dl-meta{position:relative;z-index:1;margin-top:14px;font-family:'Courier New',monospace;font-size:.58rem;letter-spacing:.12em;color:rgba(221,214,200,.22);text-transform:uppercase;}
 .coming-soon{position:relative;z-index:1;display:flex;align-items:center;gap:10px;margin-top:20px;flex-wrap:wrap;justify-content:center;}
 .cs-label{font-family:'Courier New',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(221,214,200,.25);}
@@ -100,22 +102,21 @@ footer{padding:28px 24px;display:flex;align-items:center;justify-content:space-b
     <div class="title-line right"></div>
   </div>
   <p class="hero-tagline"><span id="typed"></span><span class="cursor"></span></p>
-  <a class="dl-btn" href="https://github.com/AdrienLZR/ALIBI/releases/download/v1.0.0/ALIBI.Setup.1.0.0.exe">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.551H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
-    Télécharger — Windows
-  </a>
-  <p class="dl-meta">Version 1.0.0 &nbsp;·&nbsp; ~260 Mo &nbsp;·&nbsp; Gratuit</p>
-  <div class="coming-soon">
-    <span class="cs-label">Bientôt disponible sur</span>
-    <span class="cs-chip">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.3.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-      Mac &amp; iOS
+  <div class="dl-btn-group">
+    <a class="dl-btn" href="https://github.com/AdrienLZR/ALIBI/releases/download/v1.0.0/ALIBI.Setup.1.0.0.exe">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.551H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+      Télécharger — Windows
+    </a>
+    <span class="dl-btn-disabled">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.3.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      Mac &amp; iOS — Bientôt
     </span>
-    <span class="cs-chip">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.581 19.049c-.55-.446-.336-1.431-.932-1.8-.388-.239-.952-.374-1.721-.374-1.01 0-2.088.374-2.88 1.494-.792-1.12-1.87-1.494-2.88-1.494-.769 0-1.333.135-1.721.374-.596.369-.382 1.354-.932 1.8-.592.48-1.419.54-2.007.054-.588-.486-.657-1.358-.158-1.95.345-.407.73-.791 1.124-1.147l.27-.243c.344-.308.683-.576.995-.789.426-.29.87-.453 1.354-.453.434 0 .885.099 1.383.291.344.131.705.291 1.072.291.367 0 .728-.16 1.072-.291.498-.192.949-.291 1.383-.291.484 0 .928.163 1.354.453.312.213.651.481.995.789l.27.243c.394.356.779.74 1.124 1.147.499.592.43 1.464-.158 1.95-.588.486-1.415.426-2.007-.054zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-      Linux
+    <span class="dl-btn-disabled">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12.5 1.5c-1.77 0-3.28.95-4.07 2.35-.44.78-.68 1.67-.68 2.65 0 .87.18 1.67.5 2.38.2.44.46.84.77 1.2-.3.2-.6.45-.87.74-.7.75-1.15 1.75-1.15 2.93 0 .5.08.97.23 1.4-.7.4-1.23 1.1-1.23 2.1 0 1.27 1.03 2.25 2.3 2.25.47 0 .9-.14 1.27-.37.7.55 1.55.87 2.43.87s1.73-.32 2.43-.87c.37.23.8.37 1.27.37 1.27 0 2.3-.98 2.3-2.25 0-1-.53-1.7-1.23-2.1.15-.43.23-.9.23-1.4 0-1.18-.45-2.18-1.15-2.93-.27-.29-.57-.54-.87-.74.31-.36.57-.76.77-1.2.32-.71.5-1.51.5-2.38 0-.98-.24-1.87-.68-2.65C15.78 2.45 14.27 1.5 12.5 1.5zm0 1.5c1.27 0 2.3.6 2.93 1.5.37.55.57 1.22.57 1.97 0 .67-.14 1.28-.38 1.78-.3.63-.78 1.1-1.37 1.35-.47.2-.97.3-1.5.3s-1.03-.1-1.5-.3c-.6-.25-1.07-.72-1.37-1.35-.24-.5-.38-1.11-.38-1.78 0-.75.2-1.42.57-1.97C10.2 3.6 11.23 3 12.5 3zm-3.3 8.3c.5.3 1.05.52 1.63.63v.57c0 .28.22.5.5.5h2.34c.28 0 .5-.22.5-.5v-.57c.58-.11 1.13-.33 1.63-.63.43.43.7 1.02.7 1.7 0 .38-.08.73-.2 1.04-.5-.17-1.05-.24-1.6-.2-.93.08-1.77.48-2.4 1.1-.63-.62-1.47-1.02-2.4-1.1-.55-.04-1.1.03-1.6.2-.12-.31-.2-.66-.2-1.04 0-.68.27-1.27.7-1.7zm3.3 3.2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-3.8.6c.2 0 .4.02.6.07-.1.41-.15.84-.15 1.28 0 .34.04.67.1.98-.18.17-.42.27-.68.27-.55 0-1-.42-1-.95 0-.6.5-1.65 1.13-1.65zm7.6 0c.63 0 1.13 1.05 1.13 1.65 0 .53-.45.95-1 .95-.26 0-.5-.1-.68-.27.06-.31.1-.64.1-.98 0-.44-.05-.87-.15-1.28.2-.05.4-.07.6-.07z"/></svg>
+      Linux — Bientôt
     </span>
   </div>
+  <p class="dl-meta">Version 1.0.0 &nbsp;·&nbsp; ~260 Mo &nbsp;·&nbsp; Gratuit</p>
   <div class="scroll-hint">
     <svg width="13" height="19" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 14 20"><rect x="1" y="1" width="12" height="18" rx="6"/><line x1="7" y1="5" x2="7" y2="9"/></svg>
     Défiler
