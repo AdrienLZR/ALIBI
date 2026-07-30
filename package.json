@@ -1,0 +1,47 @@
+{
+  "name": "jeux-alibi",
+  "version": "1.0.0",
+  "description": "Alibi — le jeu d'enquête entre amis",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "set CSC_IDENTITY_AUTO_DISCOVERY=false && electron-builder --win --x64",
+    "build:all": "electron-builder --win --mac --linux"
+  },
+  "build": {
+    "appId": "com.jeuxalibi.app",
+    "productName": "ALIBI",
+    "files": [
+      "main.js",
+      "JEUX_ALIBI_V4.html",
+      "logoiconfinal-rounded.ico"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "logoiconfinal-rounded.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "logoiconfinal-rounded.ico",
+      "uninstallerIcon": "logoiconfinal-rounded.ico",
+      "shortcutName": "ALIBI",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "logoiconfinal-rounded.ico",
+      "category": "public.app-category.games"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "logoiconfinal-rounded.ico",
+      "category": "Game"
+    }
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}
