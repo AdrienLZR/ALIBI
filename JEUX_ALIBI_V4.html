@@ -803,6 +803,10 @@ html[data-theme="western"] .logo-title{text-shadow:0 0 16px rgba(212,88,26,.55),
 
 /* ══ MODE EN LIGNE ══ */
 .online-card{}
+.btn-online-help{width:24px;height:24px;border-radius:50%;border:1px solid rgba(200,144,42,.40);background:rgba(200,144,42,.08);color:rgba(200,144,42,.7);font-size:.72rem;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;transition:background .2s,border-color .2s,color .2s,box-shadow .2s,transform .18s;position:relative;}
+.btn-online-help:hover{background:rgba(200,144,42,.20);border-color:rgba(200,144,42,.80);color:#f0d060;box-shadow:0 0 10px rgba(200,144,42,.35),0 0 24px rgba(200,144,42,.15);transform:scale(1.12);}
+.btn-online-help:active{transform:scale(.95);}
+@keyframes help-pulse{0%,100%{box-shadow:0 0 0 0 rgba(200,144,42,.5);}70%{box-shadow:0 0 0 6px rgba(200,144,42,0);}}
 .online-status{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:3px;background:rgba(49,224,129,.1);border:1px solid rgba(49,224,129,.35);color:var(--ok);font-family:var(--hud-font);font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;}
 .online-status.off{background:rgba(var(--red-rgb),.08);border-color:rgba(var(--red-rgb),.35);color:var(--red2);}
 .online-code{font-family:var(--font-mono);font-weight:700;letter-spacing:.18em;font-size:1.05rem;color:var(--gold2);background:rgba(0,0,0,.4);border:1px dashed rgba(var(--gold-rgb),.6);border-radius:6px;padding:8px 12px;text-align:center;min-height:42px;display:flex;align-items:center;justify-content:center;}
@@ -2726,9 +2730,12 @@ html.spectator-mode #spectator-view{display:flex;}
         <div class="card green online-card">
           <div class="card-inner">
             <div class="row between center" style="gap:12px;flex-wrap:wrap">
-              <div>
-                <div class="card-title">🌐 Mode en ligne</div>
-                <div class="card-sub">Firebase — créer ou rejoindre une partie avec plusieurs ordinateurs</div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div>
+                  <div class="card-title">🌐 Mode en ligne</div>
+                  <div class="card-sub">Créer ou rejoindre une partie avec plusieurs ordinateurs</div>
+                </div>
+                <button onclick="document.getElementById('online-info-modal').style.display='flex'" type="button" class="btn-online-help">?</button>
               </div>
               <span id="online-status" class="online-status off">Hors ligne</span><span id="online-latency" style="display:none"><span class="lat-dot"></span><span id="online-latency-text">—</span></span>
             </div>
@@ -12848,6 +12855,81 @@ if(_SPEC_IS_SPEC){
   };
 })();
 </script>
+
+<!-- MODAL INFO MODE EN LIGNE -->
+<div id="online-info-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#0f1118;border:1px solid rgba(255,255,255,.10);border-radius:10px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;padding:0">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,.07)">
+      <div style="font-family:var(--hud-font,monospace);font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:#c8902a">🌐 Mode en ligne — Comment ça marche ?</div>
+      <button onclick="document.getElementById('online-info-modal').style.display='none'" type="button" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:1.2rem;cursor:pointer;padding:0;line-height:1">✕</button>
+    </div>
+    <!-- Contenu -->
+    <div style="padding:24px;font-size:.84rem;line-height:1.7;color:rgba(221,214,200,.75)">
+
+      <!-- Explication courte -->
+      <div style="background:rgba(49,224,129,.07);border:1px solid rgba(49,224,129,.20);border-radius:6px;padding:14px 16px;margin-bottom:20px;color:rgba(221,214,200,.85)">
+        <strong style="color:#31e081;font-family:var(--hud-font,monospace);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase">À quoi sert ce mode ?</strong><br>
+        Le mode en ligne ne connecte pas des inconnus à travers le monde. Il sert à <strong>synchroniser deux ordinateurs dans la même partie</strong> — chaque écran représente un inspecteur. L'un crée la partie, l'autre la rejoint avec un code, et les deux écrans se pilotent en temps réel.
+      </div>
+
+      <!-- Guide étape 1 -->
+      <div style="margin-bottom:18px">
+        <div style="font-family:var(--hud-font,monospace);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:#c8902a;margin-bottom:10px">① Connexion — Le Lobby</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="background:rgba(255,255,255,.04);border-radius:6px;padding:12px">
+            <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(221,214,200,.5);margin-bottom:6px">Écran Hôte (toi)</div>
+            <div>Menu → <strong>En ligne</strong> → entre ton prénom → <strong>Créer</strong><br>Un code de partie s'affiche — envoie-le à ton pote.</div>
+          </div>
+          <div style="background:rgba(255,255,255,.04);border-radius:6px;padding:12px">
+            <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(221,214,200,.5);margin-bottom:6px">Écran Invité (ton pote)</div>
+            <div>Menu → <strong>En ligne</strong> → entre son prénom → colle le code → <strong>Rejoindre</strong></div>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:4px;font-size:.78rem">
+          ✔ Les deux noms apparaissent (Inspecteur A + Inspecteur B)<br>
+          ✔ L'invité clique <strong>Prêt</strong><br>
+          ✔ Le bouton <strong>Lancer la manche</strong> s'active côté hôte uniquement → toi tu cliques
+        </div>
+      </div>
+
+      <!-- Guide étape 2 -->
+      <div style="margin-bottom:18px">
+        <div style="font-family:var(--hud-font,monospace);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:#c8902a;margin-bottom:10px">② Phase Préparation</div>
+        <div style="padding:10px 14px;background:rgba(255,255,255,.03);border-radius:4px;font-size:.78rem">
+          ✔ Les deux écrans voient les scénarios Équipe A en même temps<br>
+          ✔ Chacun peut naviguer vers Équipe B indépendamment sans affecter l'autre<br>
+          ✔ Le bouton <strong>Lancer l'interro</strong> n'apparaît que sur l'écran hôte<br>
+          ✔ Quand tout le monde a lu → hôte clique <strong>Lancer l'interro</strong> → décompte 3-2-1 sur les deux écrans
+        </div>
+      </div>
+
+      <!-- Guide étape 3 -->
+      <div style="margin-bottom:20px">
+        <div style="font-family:var(--hud-font,monospace);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:#c8902a;margin-bottom:10px">③ Phase Interrogatoire</div>
+        <div style="padding:10px 14px;background:rgba(255,255,255,.03);border-radius:4px;font-size:.78rem">
+          ✔ Les deux écrans entrent dans la partie au même moment<br>
+          ✔ La synchronisation hôte/invité continue pendant toute la partie
+        </div>
+      </div>
+
+      <!-- Tableau récap -->
+      <div style="font-family:var(--hud-font,monospace);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:#c8902a;margin-bottom:8px">Points clés à vérifier</div>
+      <table style="width:100%;border-collapse:collapse;font-size:.78rem">
+        <tr style="border-bottom:1px solid rgba(255,255,255,.07)">
+          <th style="text-align:left;padding:7px 10px;color:rgba(221,214,200,.4);font-weight:600">Étape</th>
+          <th style="text-align:left;padding:7px 10px;color:rgba(221,214,200,.4);font-weight:600">Attendu</th>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:7px 10px">Lobby : l'invité rejoint</td><td style="padding:7px 10px">Son nom apparaît sur l'écran hôte</td></tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:7px 10px">Navigation Équipe A → B</td><td style="padding:7px 10px">Chaque écran navigue indépendamment</td></tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:7px 10px">Bouton "Lancer l'interro"</td><td style="padding:7px 10px">✔ Hôte / ✗ Invité</td></tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:7px 10px">Décompte 3-2-1</td><td style="padding:7px 10px">Synchronisé sur les deux écrans</td></tr>
+        <tr><td style="padding:7px 10px">Lancement partie</td><td style="padding:7px 10px">Simultané sur les deux écrans</td></tr>
+      </table>
+
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
