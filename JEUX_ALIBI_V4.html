@@ -2037,6 +2037,54 @@ html.spectator-mode #spectator-view{display:flex;}
 #btn-spectateur{position:fixed;bottom:44px;right:106px;z-index:20;width:36px;height:36px;border-radius:50%;background:var(--coal);border:1px solid var(--wire);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.4);}
 #btn-spectateur:hover{border-color:var(--gold);box-shadow:0 0 10px rgba(var(--gold-rgb),.2);}
 @media(max-width:600px){#btn-spectateur{bottom:calc(env(safe-area-inset-bottom,0px)+8px);right:56px;}}
+body.in-lobby #btn-chat{display:none!important;}
+#btn-chat{display:none;position:fixed;bottom:50px;right:10px;z-index:240;width:40px;height:40px;border-radius:50%;background:var(--coal);border:1px solid var(--wire);cursor:pointer;align-items:center;justify-content:center;font-size:1.2rem;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.4);}
+#btn-chat.visible{display:flex;}
+#btn-chat:hover{border-color:var(--gold);box-shadow:0 0 12px rgba(var(--gold-rgb),.3);}
+#chat-badge{position:absolute;top:-4px;right:-4px;background:#c81e1e;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;display:none;align-items:center;justify-content:center;font-family:var(--hud-font);font-weight:700;}
+#chat-badge.show{display:flex;}
+#chat-panel{display:none;position:fixed;bottom:104px;right:10px;width:360px;max-height:620px;background:var(--coal);border:1px solid rgba(var(--gold-rgb),.25);border-radius:8px;z-index:500;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.6);overflow:hidden;}
+#chat-panel.open{display:flex;}
+#chat-header{padding:10px 14px;border-bottom:1px solid var(--wire);font-family:var(--hud-font);font-size:.65rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;}
+#chat-messages{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:6px;min-height:260px;}
+#chat-messages::-webkit-scrollbar{width:4px;}
+#chat-messages::-webkit-scrollbar-thumb{background:var(--wire);border-radius:2px;}
+.chat-msg{font-size:.82rem;line-height:1.5;word-break:break-word;overflow-wrap:break-word;}
+.chat-msg .chat-author{font-weight:700;margin-right:5px;font-family:var(--hud-font);font-size:.72rem;}
+.chat-msg.chat-mine .chat-author{color:#5ab;}
+.chat-msg:not(.chat-mine) .chat-author{color:var(--gold);}
+.chat-msg .chat-text{color:var(--text);}
+#chat-input-row{display:flex;gap:6px;padding:8px 10px;border-top:1px solid var(--wire);align-items:center;}
+#chat-input{flex:1;background:#0d0d10;border:1px solid rgba(255,255,255,.15);border-radius:4px;color:var(--text);font-size:.82rem;padding:8px 10px;outline:none;font-family:var(--font-mono);}
+#chat-input:focus{border-color:rgba(var(--gold-rgb),.5);}
+#chat-emoji-btn{background:transparent;border:1px solid rgba(255,255,255,.15);border-radius:4px;color:var(--text);padding:8px 9px;cursor:pointer;font-size:.9rem;transition:border-color .2s;}
+#chat-emoji-btn:hover{border-color:rgba(var(--gold-rgb),.5);}
+#chat-send{background:var(--gold);color:#000;border:none;border-radius:4px;padding:8px 13px;cursor:pointer;font-size:.9rem;font-weight:700;}
+#chat-emoji-picker{display:none;flex-wrap:wrap;gap:2px;padding:8px 10px;border-top:1px solid var(--wire);max-height:180px;overflow-y:auto;}
+#chat-emoji-picker.open{display:flex;}
+#chat-emoji-picker::-webkit-scrollbar{width:4px;}
+#chat-emoji-picker::-webkit-scrollbar-thumb{background:var(--wire);border-radius:2px;}
+#chat-emoji-picker span{font-size:1.3rem;cursor:pointer;padding:3px 5px;border-radius:4px;transition:background .15s;line-height:1.2;}
+#chat-emoji-picker span:hover{background:rgba(255,255,255,.1);}
+/* ══ PREUVES EN DIRECT ══ */
+#preuve-overlay{display:none;position:fixed;inset:0;z-index:9100;background:rgba(0,0,0,.90);backdrop-filter:blur(8px);align-items:center;justify-content:center;}
+#preuve-overlay.active{display:flex;}
+#preuve-card{background:#0c0c14;border:1px solid rgba(200,30,30,.7);border-radius:6px;max-width:540px;width:92%;box-shadow:0 0 50px rgba(200,30,30,.3),0 0 120px rgba(200,30,30,.08);overflow:hidden;animation:preuveDrop .4s cubic-bezier(.22,1,.36,1);}
+@keyframes preuveDrop{from{transform:translateY(-28px) scale(.95);opacity:0;}to{transform:none;opacity:1;}}
+#preuve-scan{height:2px;background:linear-gradient(90deg,transparent 0%,rgba(200,30,30,.8) 50%,transparent 100%);animation:scanSweep 1.8s ease-in-out infinite;}
+@keyframes scanSweep{0%,100%{transform:scaleX(0);opacity:0;}50%{transform:scaleX(1);opacity:1;}}
+#preuve-head{padding:18px 22px 12px;display:flex;align-items:center;gap:12px;}
+#preuve-badge{font-family:var(--hud-font);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:#fff;background:rgba(200,30,30,.9);padding:5px 12px;border-radius:3px;font-weight:700;animation:badgePulse 1s ease infinite alternate;}
+@keyframes badgePulse{from{box-shadow:0 0 0 0 rgba(200,30,30,.6);}to{box-shadow:0 0 12px 3px rgba(200,30,30,.3);}}
+#preuve-timebar{height:3px;background:rgba(255,255,255,.08);}
+#preuve-timefill{height:100%;background:var(--gold);width:100%;transition:width 1s linear;}
+#preuve-body{padding:22px 26px 26px;}
+#preuve-typelabel{font-family:var(--hud-font);font-size:.6rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
+#preuve-icon{font-size:2.4rem;margin-bottom:14px;line-height:1;}
+#preuve-contenu{color:var(--text);font-size:.95rem;line-height:1.75;border-left:2px solid rgba(200,30,30,.45);padding-left:16px;margin-bottom:18px;font-style:italic;}
+#preuve-countdown{font-family:var(--hud-font);font-size:.68rem;letter-spacing:.1em;color:var(--muted);text-align:right;margin-bottom:16px;}
+#preuve-close{width:100%;padding:12px;background:transparent;border:1px solid rgba(255,255,255,.18);border-radius:4px;color:var(--muted);cursor:pointer;font-family:var(--hud-font);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;transition:all .2s;}
+#preuve-close:hover{border-color:var(--gold);color:var(--gold);}
 
 @media (orientation:landscape) and (max-height:500px){
   #topbar{padding:5px 16px 0;}
@@ -2212,6 +2260,7 @@ html.spectator-mode #spectator-view{display:flex;}
     <div class="lobby-footer">
       <div class="lobby-hint" id="lobby-hint">En attente que l'invité rejoigne la partie…</div>
       <div style="display:flex;gap:8px;align-items:center;">
+        <button class="lobby-disconnect-btn" onclick="toggleChat()" title="Chat" style="font-size:1.1rem;padding:0 12px;">💬</button>
         <button class="lobby-disconnect-btn" onclick="lobbyDisconnect()">✕ Quitter</button>
         <button class="lobby-launch-btn" id="lobby-launch-btn" disabled onclick="lobbyLaunch()">🚀 Lancer la manche</button>
       </div>
@@ -2300,6 +2349,7 @@ html.spectator-mode #spectator-view{display:flex;}
   <div class="insp-btns">
     <button class="btn btn-red" id="insp-btn-save" onclick="inspSave()">💾 Enregistrer</button>
     <button class="btn btn-ghost" id="insp-btn-avocat" onclick="inspCallAvocat()" style="border-color:rgba(46,204,113,.4);color:var(--ok)">⚖️ Avocat</button>
+    <button class="btn btn-ghost" id="insp-btn-preuve" onclick="preuveDeclencher()" style="display:none;border-color:rgba(200,30,30,.5);color:#e05050">🚨 Preuve</button>
     <button class="btn btn-ghost joker-btn" id="insp-btn-joker" onclick="inspUseJoker()" title="Passer cette question">🃏 Joker<span class="joker-count" id="insp-joker-count">1</span></button>
     <button class="btn btn-ghost" id="insp-btn-next" onclick="inspNext()" disabled>👤 Suspect suivant</button>
     <button class="btn btn-gold" id="insp-btn-results" onclick="gotoResults()" style="display:none">🏁 Résultats</button>
@@ -2673,6 +2723,15 @@ html.spectator-mode #spectator-view{display:flex;}
                   <span class="mode-pill-sub">Un suspect improvise</span>
                 </div>
               </label>
+              <!-- PREUVES EN DIRECT — désactivé temporairement (WIP v2)
+              <label class="mode-pill" id="pill-preuves">
+                <label class="mode-pill-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="preuves-mode"><span class="mode-pill-slider"></span></label>
+                <div class="mode-pill-text">
+                  <span class="mode-pill-name">🚨 Preuves</span>
+                  <span class="mode-pill-sub">Preuves en direct</span>
+                </div>
+              </label>
+              -->
             </div>
             <div class="difficulty-row">
               <div class="difficulty-group">
@@ -3114,6 +3173,253 @@ html.spectator-mode #spectator-view{display:flex;}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script>
+const SCENARIO_PREUVES=[
+/* 0 — Concert */[
+  {icon:"🧾",type:"Ticket de caisse",contenu:"Un ticket de bar au nom de la salle retrouvé dans vos affaires indique une transaction à 20h47 — soit environ une heure avant l'ouverture officielle des portes du concert."},
+  {icon:"📱",type:"Message intercepté",contenu:"Un SMS reçu ce soir-là à 21h32 : \"Eh, vous êtes dans la fosse ou en tribune ? Ça fait 40 min qu'on vous cherche partout.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"Le responsable de la sécurité de la salle déclare n'avoir accordé aucune dérogation d'entrée ce soir-là — ses registres ne mentionnent aucun bracelet de couleur différente remis à l'entrée."}
+],
+/* 1 — Restaurant */[
+  {icon:"🧾",type:"Relevé bancaire",contenu:"Un relevé de carte retrouvé indique un paiement de 43€ dans un tout autre restaurant ce même soir, à 20h14 — heure à laquelle vous prétendez être attablés dans l'établissement en question."},
+  {icon:"📱",type:"Notification téléphone",contenu:"Une alerte automatique sur le téléphone de l'un des suspects : \"Rappel : votre réservation chez [Restaurant] a été annulée à votre demande — ce soir à 19h30.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"Le serveur de permanence ce soir-là déclare ne se souvenir d'aucun incident lié à une double facturation — et confirme n'avoir installé aucun groupe à la table du fond en raison d'un problème de réservation."}
+],
+/* 2 — Anniversaire surprise */[
+  {icon:"🧾",type:"Ticket de caisse",contenu:"Le ticket d'achat des bougies retrouvé dans un sac est daté d'avant-hier — pas du jour même. Quelqu'un les avait donc achetées bien avant l'histoire que vous racontez."},
+  {icon:"📱",type:"Message de groupe",contenu:"Dans la discussion de groupe de la fête, un message envoyé à 17h43 : \"Les bougies ont disparu depuis ce matin — quelqu'un les a vues ? C'est urgent.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"Deux invités présents ce soir-là déclarent ne pas avoir vu les deux suspects ensemble dans la cuisine au moment où les bougies auraient disparu — l'un d'eux affirme que la pièce était vide."}
+],
+/* 3 — Bibliothèque */[
+  {icon:"🧾",type:"Historique système",contenu:"Le système informatique de la bibliothèque ne trace aucun passage de carte ni aucune transaction à votre nom ce jour-là — aucune tentative de connexion enregistrée."},
+  {icon:"📱",type:"Notification appli",contenu:"Une notification de l'application de la bibliothèque, horodatée à 14h02 : \"Votre réservation de salle de lecture expire dans 10 minutes.\" — soit à un moment où vous dites être encore en train de chercher vos affaires à l'entrée."},
+  {icon:"👁️",type:"Témoignage",contenu:"La bibliothécaire de permanence ce jour-là affirme n'avoir géré aucun incident de carte refusée — elle se souvient d'une journée particulièrement calme sans aucun problème technique signalé."}
+],
+/* 4 — Cinéma */[
+  {icon:"🧾",type:"Reçu de caisse",contenu:"Le reçu retrouvé dans une veste indique l'achat d'un seul billet — pas deux. Le paiement a été effectué en espèces, pas par carte."},
+  {icon:"📱",type:"Notification appli cinéma",contenu:"Une notification de l'application du cinéma affiche : \"Votre billet a été scanné à l'entrée de la salle à 21h08\" — soit 25 minutes après le début du film que vous prétendez avoir vu depuis le début."},
+  {icon:"👁️",type:"Témoignage",contenu:"La caissière en poste ce soir-là déclare ne se souvenir d'aucun refus de carte à la borne automatique — et précise que cette borne n'était d'ailleurs pas en service ce soir-là, elle était en maintenance."}
+],
+/* 5 — Karting */[
+  {icon:"🧾",type:"Facture de location",contenu:"La facture retrouvée ne mentionne qu'une seule session — pas deux. La ligne \"location de gants\" n'apparaît nulle part dans le détail de la commande."},
+  {icon:"📱",type:"Message reçu",contenu:"Un message envoyé pendant la prétendue session de karting : \"Ça fait 3h qu'on vous attend dehors — vous roulez encore ? On croyait que c'était fini à 16h.\""},
+  {icon:"👁️",type:"Tableau des temps",contenu:"Le gérant du karting déclare ne trouver aucune trace de votre passage dans le registre des sessions ce jour-là — le tableau des temps ne porte aucun identifiant correspondant aux noms fournis."}
+],
+/* 6 — Escape game */[
+  {icon:"🧾",type:"Bon de réservation",contenu:"Le bon de réservation indique une heure de fin de session à 19h15 — soit 40 minutes avant l'heure à laquelle vous prétendez être sortis \"avec 2 minutes restantes\"."},
+  {icon:"📱",type:"Message du game master",contenu:"Un message automatique envoyé par le système de l'escape game : \"Merci d'avoir joué ! Votre équipe a utilisé 4 indices au total ce soir.\" — vous n'en avez mentionné qu'un seul."},
+  {icon:"👁️",type:"Témoignage",contenu:"Le game master déclare n'avoir donné aucun indice verbal à l'équipe ce soir — il confirme que toutes les demandes d'aide passent uniquement par l'écran intégré, jamais à voix haute."}
+],
+/* 7 — Bowling */[
+  {icon:"🧾",type:"Ticket de location",contenu:"Le ticket de location de chaussures ne mentionne qu'une seule transaction — une seule pointure demandée, pas d'échange signalé ni de deuxième passage au comptoir."},
+  {icon:"📱",type:"Message d'un ami",contenu:"Un message reçu le soir même : \"J'ai vu la vidéo que quelqu'un a postée de votre partie — le strike était vraiment limite, le compteur l'a validé mais c'était douteux haha.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"Le serveur de la salle de bowling déclare que les nachos ont été commandés et servis en cours de partie — pas après — et précise qu'aucune commande à cette table n'a été passée après la fin de la session."}
+],
+/* 8 — Marché */[
+  {icon:"🧾",type:"Reçu de vente",contenu:"Le reçu trouvé dans le sac reversé appartient à un stand situé à l'autre bout du marché — dans un secteur que vous n'avez pas mentionné avoir visité."},
+  {icon:"📱",type:"Message d'un proche",contenu:"Un message envoyé à 11h17 ce matin-là : \"T'es au marché ? Moi aussi — j'ai fait tous les allées mais je vous ai pas croisés une seule fois.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"Le vendeur du stand concerné déclare ne se souvenir d'aucun sac renversé ce matin-là près de son étalage — et précise qu'il n'y a eu aucun incident notable dans son secteur."}
+],
+/* 9 — Piscine */[
+  {icon:"🧾",type:"Ticket d'entrée",contenu:"Le ticket d'entrée retrouvé dans les affaires indique l'accès d'une seule personne — pas deux. Il n'existe aucune trace d'un second passage à la caisse ce jour-là."},
+  {icon:"📱",type:"Notification appli",contenu:"Une alerte automatique sur le téléphone : \"La piscine ferme dans 30 minutes\" — horodatée à 17h30. Or vous situez l'incident du bonnet oublié en milieu d'après-midi, bien avant cette heure."},
+  {icon:"👁️",type:"Témoignage",contenu:"Le maître-nageur de permanence ce jour-là déclare ne se souvenir d'aucune personne revenue récupérer un bonnet oublié — et précise que les objets trouvés de la journée ont tous été rapportés directement à l'accueil."}
+],
+/* 10 — Road trip */[
+  {icon:"🧾",type:"Relevé de péage",contenu:"Le relevé automatique du télépéage indique un passage à 18h43 — soit près de deux heures après l'heure que vous annoncez. Le trajet décrit ne correspond pas à cet horaire."},
+  {icon:"📱",type:"Message reçu",contenu:"Un message envoyé depuis le véhicule à 16h09 : \"Le GPS dit 1h40 de retard sur l'heure prévue — la voiture est où exactement ?\" — heure incompatible avec le début de trajet que vous décrivez."},
+  {icon:"📷",type:"Caméra de péage",contenu:"L'image enregistrée par la caméra automatique du péage montre un seul occupant dans le véhicule au moment du passage — pas deux personnes comme vous le déclarez."}
+],
+/* 11 — Fast-food */[
+  {icon:"🧾",type:"Reçu de commande",contenu:"Le reçu retrouvé indique une commande pour une seule personne — un menu simple, aucune trace d'un second plateau ni des plats spécifiques que vous décrivez."},
+  {icon:"📱",type:"Notification de livraison",contenu:"L'application fast-food envoie une confirmation : \"Votre commande a été livrée à votre adresse à 19h52\" — ce soir-là, vous prétendez être sur place en salle."},
+  {icon:"👁️",type:"Témoignage",contenu:"La caissière en poste ce soir-là déclare ne se souvenir d'aucune confusion de commande notable — elle précise que les erreurs de ce type sont systématiquement enregistrées dans le logiciel de caisse, et aucune n'apparaît."}
+],
+/* 12 — Magasin */[
+  {icon:"🧾",type:"Ticket de caisse",contenu:"Le ticket de caisse retrouvé indique non pas un achat mais un remboursement effectué ce jour-là — le produit en question avait donc déjà été acheté et retourné, pas offert."},
+  {icon:"📱",type:"Message envoyé",contenu:"Un message envoyé à un ami ce jour-là à 15h22 : \"J'ai trouvé quoi lui offrir — t'es dispo pour emballer toi ? J'ai la flemme de payer l'emballage cadeau en magasin.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"La vendeuse du rayon concerné déclare ne se souvenir d'aucune demande d'emballage cadeau ce jour-là — elle précise que le service emballage était fermé pour cause de personnel absent."}
+],
+/* 13 — Supermarché */[
+  {icon:"🧾",type:"Ticket de caisse",contenu:"Le ticket de caisse retrouvé est horodaté à 21h47 — or les horaires officiels de l'enseigne indiquent une fermeture à 21h30. Quelque chose ne colle pas."},
+  {icon:"📱",type:"Message reçu",contenu:"Un SMS reçu à 21h12 : \"Le super ferme dans 15 min — faites vite, les caissières commencent à éteindre les lumières des rayons.\" Or vous décrivez une arrivée tranquille sans urgence."},
+  {icon:"👁️",type:"Témoignage",contenu:"La caissière de permanence ce soir-là déclare n'avoir fermé aucune caisse de manière précipitée — elle se souvient d'une fermeture normale et d'aucun groupe de clients qui aurait failli se retrouver bloqué."}
+],
+/* 14 — Aéroport */[
+  {icon:"🧾",type:"Reçu de surcharge",contenu:"Le reçu de surcharge bagage ne porte qu'un seul nom — un seul passager a payé le supplément. Si vous étiez deux, pourquoi l'autre n'apparaît nulle part dans la transaction ?"},
+  {icon:"📱",type:"Notification de vol",contenu:"Une notification automatique sur le téléphone : \"Votre vol a embarqué — retard enregistré de 52 minutes suite à un problème d'enregistrement.\" Vous ne faites mention d'aucun retard dans votre récit."},
+  {icon:"📷",type:"Caméra aéroport",contenu:"Les images de la caméra de la zone d'enregistrement montrent une personne seule aux bagages à l'heure que vous annoncez — aucune trace d'un second passager à ses côtés."}
+],
+/* 15 — Urgences */[
+  {icon:"🧾",type:"Registre d'admission",contenu:"Le registre des urgences de ce soir-là ne mentionne qu'une seule admission correspondant à votre description — une seule personne, pas deux visiteurs accompagnateurs enregistrés."},
+  {icon:"📱",type:"Message reçu",contenu:"Un message reçu à 23h41 : \"T'es encore aux urgences ? Ça fait combien de temps maintenant — tu nous tiens au courant ou pas ?\" — heure incompatible avec la durée d'attente que vous décrivez."},
+  {icon:"👁️",type:"Témoignage",contenu:"L'infirmière de permanence déclare se souvenir d'une seule personne correspondant à votre description dans la salle d'attente ce soir-là — pas deux. Elle est formelle."}
+],
+/* 16 — Fête foraine */[
+  {icon:"🧾",type:"Ticket gagnant",contenu:"Le ticket gagnant retrouvé dans vos affaires est daté du vendredi dernier — pas du jour que vous décrivez. Le lot aurait donc été remporté un autre jour."},
+  {icon:"📱",type:"Message d'un ami",contenu:"Un message reçu le soir de la fête foraine : \"On aurait bien voulu venir avec vous — pourquoi vous nous avez pas prévenus que vous y alliez ?\""},
+  {icon:"👁️",type:"Témoignage",contenu:"Le forain responsable du stand principal déclare n'avoir remis aucun lot important ce jour-là — il tient un registre des gagnants et votre description ne correspond à aucune entrée."}
+],
+/* 17 — Vide-grenier */[
+  {icon:"🧾",type:"Reçu de vente",contenu:"Le prix inscrit sur l'étiquette de la trouvaille ne correspond pas à ce que vous décrivez — et le numéro de stand noté ne figure pas parmi les exposants officiels de ce vide-grenier."},
+  {icon:"📱",type:"Message envoyé",contenu:"Un message envoyé à 10h23 : \"J'ai trouvé un truc dingue — on rentre.\" Horodaté bien avant l'heure à laquelle vous situez votre découverte dans votre récit."},
+  {icon:"👁️",type:"Témoignage",contenu:"Le vendeur du stand en question déclare ne pas se souvenir de vous avoir vendu cet objet — il affirme que sa trouvaille la plus notable de la journée a été achetée par une femme seule, pas un duo."}
+],
+/* 18 — Salle d'arcade */[
+  {icon:"🧾",type:"Reçu d'échange",contenu:"Le reçu d'échange de tickets indique 87 tickets échangés contre un lot — vous décrivez avoir failli toucher le jackpot à plusieurs milliers de tickets. L'écart est considérable."},
+  {icon:"📱",type:"Message d'un témoin",contenu:"Un message d'un ami présent dans la salle ce soir-là : \"J'ai vu votre partie — vous avez pas vraiment failli avoir le jackpot hein, la machine s'est juste mise à clignoter sans raison.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"L'employé de la salle déclare que la machine à jackpot en question était en mode maintenance depuis le matin — aucune partie valide n'a pu y être jouée ce jour-là selon le journal technique."}
+],
+/* 19 — Pique-nique */[
+  {icon:"🧾",type:"Relevé météo officiel",contenu:"Le bulletin météorologique officiel de ce jour-là ne signale aucune pluie ni aucune perturbation dans le secteur que vous désignez — ciel dégagé toute la journée selon les données de la station la plus proche."},
+  {icon:"📱",type:"Message de groupe",contenu:"Dans la discussion de groupe : \"La pluie on s'en fout — venez quand même !\" envoyé à 14h37. Or vous situez votre départ précipité à cause de la pluie avant le déjeuner, soit bien avant ce message."},
+  {icon:"👁️",type:"Témoignage",contenu:"Un habitué du parc qui se promène chaque jour déclare n'avoir vu aucun pique-nique ni aucun groupe dans la zone que vous décrivez ce jour-là — et confirme qu'il n'a pas plu."}
+],
+/* 20 — Salle de sport */[
+  {icon:"🧾",type:"Registre d'accès",contenu:"Le registre électronique d'entrée de la salle enregistre bien votre passage à l'entrée — mais aucune sortie n'a été enregistrée ce jour-là. Vous seriez encore dans la salle selon le système."},
+  {icon:"📱",type:"Message au responsable",contenu:"Un message envoyé à 11h34 au compte de la salle : \"Casier bloqué au fond du vestiaire — vous pouvez envoyer quelqu'un ?\" — aucune réponse, et aucune intervention n'a été tracée selon les archives."},
+  {icon:"👁️",type:"Témoignage",contenu:"Le coach de permanence ce matin-là déclare n'avoir vu qu'une seule personne de votre description dans la salle — seul, pas en duo. Il est certain de ne pas en avoir vu deux ensemble."}
+],
+/* 21 — Musée */[
+  {icon:"🧾",type:"Ticket d'entrée",contenu:"Le ticket d'entrée retrouvé donne accès à l'exposition permanente uniquement — pas à l'exposition temporaire que vous mentionnez avoir visitée, qui nécessitait un billet séparé."},
+  {icon:"📱",type:"Message envoyé",contenu:"Un message envoyé à un ami à 15h52 : \"Cette œuvre est vraiment nulle mais lui adore — on est encore là, encore 20 min.\" Or le musée ferme à 17h et vous décrivez une visite qui s'est terminée vers 14h."},
+  {icon:"👁️",type:"Témoignage",contenu:"Un gardien de salle déclare que l'œuvre qui vous a divisés était en prêt à un musée partenaire ce jour-là et n'était pas exposée — elle n'est revenue qu'en fin de semaine suivante."}
+],
+/* 22 — Train */[
+  {icon:"🧾",type:"Billet de train",contenu:"Le billet retrouvé indique une place en voiture 14, côté fenêtre — vous décrivez un incident dans la voiture 7, côté couloir. Ce n'est pas le même wagon."},
+  {icon:"📱",type:"Alerte SNCF",contenu:"Une notification automatique reçue ce jour-là : \"Votre train est annoncé avec 47 minutes de retard à l'arrivée.\" Vous ne faites aucune mention de ce retard dans votre récit."},
+  {icon:"👁️",type:"Témoignage",contenu:"Le contrôleur en service ce jour-là déclare ne se souvenir d'aucun incident impliquant des passagers dans le mauvais wagon — et précise qu'aucun signalement de ce type n'a été inscrit dans son rapport de service."}
+],
+/* 23 — Parc d'attractions */[
+  {icon:"🧾",type:"Bracelet de parc",contenu:"Le bracelet retrouvé dans vos affaires porte une date imprimée qui correspond au week-end dernier — pas au jour que vous décrivez."},
+  {icon:"📱",type:"Message d'un ami",contenu:"Un message reçu ce jour-là : \"Vous avez fait le grand manège ? J'ai vu la file sur vos stories — y'avait genre 2h d'attente ce matin.\" Vous n'avez pas mentionné d'attente dans votre récit."},
+  {icon:"👁️",type:"Témoignage",contenu:"L'opérateur du manège en question déclare n'avoir noté aucun incident de panique ni aucune réaction inhabituelle parmi les passagers ce jour-là — sa fiche d'incidents est vierge."}
+],
+/* 24 — Halloween nuit */[
+  {icon:"🧾",type:"Ticket de taxi",contenu:"Un reçu de taxi retrouvé indique une prise en charge à 02h17 à une adresse totalement différente de celle que vous décrivez — à plusieurs kilomètres du lieu de la soirée."},
+  {icon:"📱",type:"Message reçu",contenu:"Un message reçu à 02h17 : \"Où vous êtes ? On vous cherche depuis des heures — vous avez disparu après minuit sans prévenir personne.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"L'organisateur de la soirée déclare ne pas se souvenir de votre présence après 23h — et affirme que personne de votre description ne figure sur les photos prises en cours de soirée."}
+],
+/* 25 — Halloween maison hantée */[
+  {icon:"🧾",type:"Ticket d'entrée",contenu:"Le ticket d'entrée retrouvé ne porte qu'un seul numéro de visiteur — une seule personne est enregistrée, pas deux. Les entrées en duo génèrent pourtant systématiquement deux tickets séparés."},
+  {icon:"📱",type:"Message reçu",contenu:"Un message reçu à 22h34 : \"Sortez de là — c'est fermé depuis 30 minutes, le gérant cherche les derniers clients encore à l'intérieur.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"L'animateur principal de la maison hantée déclare que personne n'est sorti en courant ce soir-là — il précise que les sorties précipitées sont systématiquement notées dans le rapport pour des raisons de sécurité."}
+],
+/* 26 — Noël cadeaux abîmés */[
+  {icon:"🧾",type:"Suivi de colis",contenu:"Le journal de suivi du colis indique \"Livraison effectuée — colis en bon état, signature obtenue\" — aucune mention de dommage signalée par le transporteur à la livraison."},
+  {icon:"📱",type:"Message du vendeur",contenu:"Un message automatique du service client reçu il y a trois jours : \"Votre remboursement partiel de 18€ a bien été traité.\" Vous n'avez mentionné aucune démarche de remboursement dans votre récit."},
+  {icon:"👁️",type:"Témoignage",contenu:"La personne ayant reçu le colis déclare que l'emballage extérieur était intact à l'arrivée — la boîte n'avait aucun choc apparent. Les dégâts auraient donc eu une autre origine."}
+],
+/* 27 — Noël réveillon */[
+  {icon:"🧾",type:"Commande de nuit",contenu:"Un reçu de livraison de nuit retrouvé indique une commande passée à 01h32 à une adresse différente de celle où vous dites avoir passé le réveillon."},
+  {icon:"📱",type:"Message familial",contenu:"Dans la discussion de famille : \"Tout le monde est parti depuis longtemps — c'est bizarre de pas avoir de nouvelles, vous êtes où ?\" Envoyé à 00h47, heure à laquelle vous décrivez encore être en plein réveillon."},
+  {icon:"👁️",type:"Témoignage",contenu:"Le voisin de palier déclare n'avoir rien entendu d'inhabituel ce soir-là depuis l'appartement — aucun bruit de fête, aucune musique, aucun éclat de rire. Tout était calme selon lui dès 22h."}
+],
+/* 28 — Polar enveloppe */[
+  {icon:"🧾",type:"Rapport de commissariat",contenu:"L'enveloppe déposée au commissariat a été enregistrée comme déjà ouverte à l'arrivée — les agents notent qu'elle avait été décachetée avant le dépôt, contrairement à ce que vous déclarez."},
+  {icon:"📱",type:"Message reçu",contenu:"Peu après l'incident, un message d'un numéro inconnu : \"Vous avez trouvé quelque chose qui nous appartient. Gardez ça pour vous.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"L'agent d'accueil du commissariat déclare ne pas se souvenir d'un dépôt d'enveloppe ce jour-là — et précise qu'un tel dépôt aurait obligatoirement généré un récépissé, dont il n'existe aucune trace."}
+],
+/* 29 — Polar voisin */[
+  {icon:"🧾",type:"Registre d'immeuble",contenu:"Le registre de l'immeuble indique que l'appartement en question était officiellement inoccupé depuis deux semaines — le bail avait expiré et les clés avaient été rendues au syndic."},
+  {icon:"📱",type:"Message de la personne visitée",contenu:"La personne que vous étiez censés visiter envoie un message le lendemain : \"Je vous ai attendus mais vous êtes restés dans le couloir longtemps — il s'est passé quelque chose ?\""},
+  {icon:"👁️",type:"Témoignage",contenu:"Le gardien de l'immeuble déclare n'avoir reçu aucun signalement de bruit sourd ni de comportement suspect ce soir-là — aucun résident ne lui a rapporté d'incident dans les couloirs."}
+],
+/* 30 — Futuriste taxi volant */[
+  {icon:"🧾",type:"Journal de bord IA",contenu:"Le journal de bord automatique du taxi enregistre un trajet sans aucune anomalie technique ce jour-là sur cette ligne — aucune panne, aucune déviation d'urgence, trajet nominal de bout en bout."},
+  {icon:"📱",type:"Notification système",contenu:"Un rapport automatique envoyé sur le téléphone : \"Votre trajet a été annulé à votre initiative à 14h23\" — la raison notée est \"annulation client\", pas une panne technique."},
+  {icon:"👁️",type:"Témoignage",contenu:"L'opérateur de la station de maintenance la plus proche déclare n'avoir reçu aucun véhicule en dépannage d'urgence ce jour-là — ses registres d'intervention sont vides pour ce créneau horaire."}
+],
+/* 31 — Futuriste IA */[
+  {icon:"🧾",type:"Log de session",contenu:"Le journal de session de l'assistant IA ne recense aucune erreur, aucun bug, aucun redémarrage forcé lors de votre dernière utilisation — la session s'est terminée normalement selon les données système."},
+  {icon:"📱",type:"Rapport automatique",contenu:"Un rapport envoyé automatiquement après la session : \"Session terminée. Durée : 23 minutes. Erreurs détectées : 0. Données sauvegardées : 100%.\" Aucune perte de données enregistrée."},
+  {icon:"👁️",type:"Témoignage",contenu:"Le support technique du fabricant déclare n'avoir reçu aucun signalement de bug pour votre identifiant utilisateur ce jour-là — et précise que les bugs de répétition en boucle sont automatiquement télétransmis, ce qui n'a pas eu lieu."}
+],
+/* 32 — Plage */[
+  {icon:"🧾",type:"Bulletin météo",contenu:"La météo officielle de ce jour-là ne signale aucune méduse dans le secteur — le poste de secours de la plage confirme par écrit qu'aucune alerte méduse n'a été déclenchée de toute la journée."},
+  {icon:"📱",type:"Message envoyé",contenu:"Un message envoyé depuis la plage à 13h14 : \"Finalement on rentre — trop nul comme journée.\" Horodaté en milieu d'après-midi, alors que vous situez votre départ en fin de journée à cause du vent."},
+  {icon:"📷",type:"Caméra de surveillance",contenu:"La caméra de surveillance de la plage enregistre une personne seule à l'emplacement que vous décrivez à l'heure indiquée — impossible de distinguer un duo dans les images disponibles."}
+],
+/* 33 — Match de sport */[
+  {icon:"🧾",type:"Billet de stade",contenu:"Les billets retrouvés sont pour la tribune Est, rang L — vous décrivez l'incident comme s'étant produit dans la tribune Nord, secteur debout. Ce ne sont pas les mêmes emplacements."},
+  {icon:"📱",type:"Message d'un ami",contenu:"Un message reçu pendant le match : \"On vous a vus sur l'écran géant ! Vous étiez vraiment en bas dans la fosse ? On aurait dit que vous étiez ailleurs.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"L'agent de sécurité en charge du secteur que vous désignez déclare n'avoir effectué aucune intervention liée à un incident de boisson renversée ce soir-là — son rapport de service ne mentionne aucun conflit entre spectateurs."}
+],
+/* 34 — Karaoké v1 */[
+  {icon:"🧾",type:"Note de bar",contenu:"La note de bar retrouvée dans vos affaires ne mentionne aucune consommation passée aux horaires que vous décrivez — la première commande à votre table est enregistrée à une heure beaucoup plus tardive."},
+  {icon:"📱",type:"Message reçu",contenu:"Un message reçu après la soirée : \"La veste était accrochée à l'entrée depuis le début de la soirée — on s'est demandés à qui elle était, tu l'avais même pas remarqué ?\""},
+  {icon:"👁️",type:"Témoignage",contenu:"L'animateur de la soirée déclare que son micro n'a connu aucun incident technique ce soir-là — et précise qu'il aurait consigné toute panne dans le rapport matériel, qui est vierge."}
+],
+/* 35 — Surf */[
+  {icon:"🧾",type:"Bon de location",contenu:"Le bon de location de planche ne porte qu'un seul nom — une seule planche a été louée ce jour-là sous votre groupe. La seconde planche n'apparaît dans aucun registre."},
+  {icon:"📱",type:"Message du moniteur",contenu:"Un message reçu du moniteur après la session du matin : \"Belle progression ! Attention cet après-midi — on a fermé l'accès à l'eau à 14h à cause de la houle, trop dangereux.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"Le gérant de la buvette de la plage déclare ne se souvenir d'aucun duo correspondant à votre description ce jour-là — et précise que sa buvette était fermée pour cause de livraison manquée."}
+],
+/* 36 — Cours de cuisine */[
+  {icon:"🧾",type:"Liste de présence",contenu:"La liste de présence officielle du cours ne porte que le nom d'une seule personne parmi vous — le second ne figure nulle part dans les inscrits de cette session."},
+  {icon:"📱",type:"Message du chef",contenu:"Un message envoyé par le chef le lendemain : \"Bravo pour hier ! La photo du gâteau est sur le compte du cours — c'était vraiment une belle réussite pour une première participation.\" Vous parlez pourtant d'un gâteau raté."},
+  {icon:"👁️",type:"Témoignage",contenu:"Le chef instructeur déclare que personne n'a dû recommencer sa pâte ni jeter son gâteau ce jour-là — il précise que la session s'est déroulée sans incident majeur et que tous les participants sont repartis avec leur production."}
+],
+/* 37 — Laser game */[
+  {icon:"🧾",type:"Tableau des scores",contenu:"Le tableau des scores de la session du jour ne fait figurer aucun pseudonyme ni aucun identifiant correspondant à votre description — vos noms sont absents des résultats officiels."},
+  {icon:"📱",type:"Message d'un inconnu",contenu:"Un message reçu via l'appli du laser game : \"GG pour la partie — c'était vous les deux en rouge ? Belle perf !\" Or vous décrivez ne pas avoir choisi votre équipe."},
+  {icon:"👁️",type:"Témoignage",contenu:"L'arbitre de la session déclare que toutes les équipes de cette partie se connaissaient — c'était une réservation de groupe privatisée. Aucun joueur extérieur n'était censé être là ce soir-là."}
+],
+/* 38 — Sortie vélo */[
+  {icon:"🧾",type:"Reçu de réparation",contenu:"Le reçu de réparation de crevaison retrouvé dans les affaires est daté d'il y a trois jours — pas de ce jour. La crevaison aurait donc déjà été réparée avant cette sortie."},
+  {icon:"📱",type:"Message d'un passant",contenu:"Un message reçu d'un numéro inconnu : \"On vous a vus au bord de la nationale tout à l'heure — vous étiez vraiment loin du point de départ prévu, vous faisiez une grande boucle ?\""},
+  {icon:"👁️",type:"Témoignage",contenu:"Le garagiste du bourg le plus proche déclare n'avoir réparé aucun vélo ce jour-là — et précise que son atelier était fermé l'après-midi pour une formation, ce qui rend votre récit de réparation impossible à cet endroit."}
+],
+/* 39 — Tournage */[
+  {icon:"🧾",type:"Métadonnées vidéo",contenu:"Les métadonnées du fichier vidéo récupéré indiquent une date d'enregistrement différente de celle que vous annoncez — décalage de deux jours selon l'horodatage interne de la caméra."},
+  {icon:"📱",type:"Message de groupe",contenu:"Dans le groupe de tournage : \"La vidéo est bien montée mais on entend quelqu'un pleurer en arrière-plan pendant le fou rire — c'était qui ?\" Aucun de vous n'en a fait mention."},
+  {icon:"👁️",type:"Témoignage",contenu:"Le propriétaire du lieu de tournage déclare n'avoir autorisé aucun tournage ce jour-là — son espace est réservé sur carnet, et aucune réservation ne figure à votre nom pour cette date."}
+],
+/* 40 — Patinoire */[
+  {icon:"🧾",type:"Ticket d'entrée",contenu:"Le ticket de patinoire retrouvé indique une entrée pour une séance de 45 minutes — la formule la plus courte. Vous décrivez une session de près de deux heures, ce qui n'est pas possible avec ce billet."},
+  {icon:"📱",type:"Message d'un ami",contenu:"Un message reçu juste après : \"J'ai tout filmé la chute — je vous l'envoie, c'était vraiment trop drôle. T'as pas l'air d'avoir eu mal finalement.\" Vous faites pourtant mention d'une chute spectaculaire."},
+  {icon:"👁️",type:"Témoignage",contenu:"L'animateur de la séance déclare que personne n'a nécessité d'aide ni de soins ce jour-là sur la glace — il précise que les chutes nécessitant une intervention sont systématiquement signalées dans le registre de sécurité."}
+],
+/* 41 — Escape room */[
+  {icon:"🧾",type:"Fiche résultat",contenu:"La fiche résultat officielle de votre session indique 4 indices utilisés au total — vous n'avez mentionné qu'une seule demande d'aide dans votre récit. Les 3 autres sont introuvables dans votre version."},
+  {icon:"📱",type:"Message du game master",contenu:"Un message automatique reçu après la session : \"Belle tentative ! La dernière énigme résiste à 94% des équipes cette semaine. Vous avez été sortis avec 0 seconde restante.\" Vous parliez de sortir de justesse — pas d'être sortis."},
+  {icon:"👁️",type:"Témoignage",contenu:"Le chronomètre officiel indique que votre équipe a été extraite avant la fin du temps — pas de justesse comme vous le déclarez. La porte a été ouverte par le game master faute de résolution dans les temps."}
+],
+/* 42 — Spectacle de rue */[
+  {icon:"🧾",type:"Vidéo en ligne",contenu:"Une vidéo amateur postée sur les réseaux ce jour-là montre un volontaire en scène avec cet artiste — mais à un emplacement totalement différent de celui que vous décrivez, à l'autre bout de la ville."},
+  {icon:"📱",type:"Message d'un ami",contenu:"Un message reçu le soir même : \"J'ai vu la vidéo du type monté sur scène avec le jongleur — c'était toi ???\" Or vous décrivez un magicien, pas un jongleur."},
+  {icon:"👁️",type:"Témoignage",contenu:"L'artiste de rue déclare que son volontaire du jour s'était porté spontanément — il n'était pas monté \"malgré lui\" comme vous le décrivez, et la réaction de la foule qu'il décrit ne correspond pas à votre version."}
+],
+/* 43 — Nuit blanche */[
+  {icon:"🧾",type:"Reçu de café de nuit",contenu:"Un reçu d'un café ouvert la nuit indique un paiement à 05h23 — à une adresse précise. Or vous affirmez être rentrés avant 04h30. Quelqu'un payait encore des consommations après votre prétendue heure de retour."},
+  {icon:"📱",type:"Message reçu",contenu:"Un message reçu à 06h02 : \"T'es rentré ? T'as répondu à aucun message depuis 23h — tout va bien ?\" Vous n'avez mentionné aucune coupure de communication dans votre récit."},
+  {icon:"👁️",type:"Témoignage",contenu:"Le vigile de nuit de votre immeuble déclare n'avoir vu rentrer qu'une seule personne correspondant à votre description ce matin-là — pas deux. Et l'heure qu'il note ne correspond pas à la vôtre."}
+],
+/* 44 — Camping */[
+  {icon:"🧾",type:"Registre du camping",contenu:"Le registre d'accueil du camping indique que votre emplacement n'a fait l'objet d'aucun check-in ce soir-là — personne n'a signé à l'arrivée, et votre nom ne figure pas parmi les présents de la nuit."},
+  {icon:"📱",type:"Message reçu",contenu:"Un message reçu à 03h15 depuis une tente voisine : \"Vous dormez enfin ? C'est silencieux de votre côté depuis plus de 2h — tout va bien ?\" Vous décrivez pourtant une nuit agitée jusqu'au matin."},
+  {icon:"👁️",type:"Témoignage",contenu:"Le gardien du camping déclare n'avoir vu personne se lever dans la nuit dans votre secteur — ses rondes régulières n'ont signalé aucun mouvement ni aucune lumière de lampe torche dans cette zone."}
+],
+/* 45 — Yoga */[
+  {icon:"🧾",type:"Liste de présence",contenu:"La liste de présence du cours ne mentionne qu'un seul participant parmi vous — l'autre n'est inscrit sur aucun registre de cette session, ni sur les séances précédentes."},
+  {icon:"📱",type:"Message du professeur",contenu:"Un message du professeur envoyé après le cours : \"Bravo pour aujourd'hui ! La posture finale était vraiment bien maîtrisée pour une première participation.\" Vous décrivez pourtant une pose ratée qui a fait rire toute la salle."},
+  {icon:"👁️",type:"Témoignage",contenu:"Un autre participant régulier du cours déclare ne pas se souvenir d'incident ni de moment de rire collectif lors de cette session — il décrit un cours calme et sérieux du début à la fin."}
+],
+/* 46 — Casino */[
+  {icon:"🧾",type:"Relevé de mise",contenu:"Le relevé des mises enregistré par la machine ne correspond pas aux montants que vous décrivez — les transactions du soir indiquent des sommes bien inférieures aux 5 euros mentionnés comme mise de départ."},
+  {icon:"📱",type:"Message d'un ami",contenu:"Un message reçu le lendemain : \"T'as vraiment gagné quelque chose au final ou vous avez encore tout perdu comme la dernière fois ?\" — sous-entendu que ce n'est pas votre premier échec au casino."},
+  {icon:"👁️",type:"Témoignage",contenu:"Le croupier de permanence ce soir-là déclare n'avoir noté aucun incident notable à sa table — et précise qu'un gain significatif avec une mise aussi faible aurait obligatoirement déclenché une procédure de validation supervisée."}
+],
+/* 47 — Accrobranche */[
+  {icon:"🧾",type:"Fiche de sécurité",contenu:"La fiche de sécurité signée avant le départ ne mentionne aucun incident avec l'équipement — la case \"anomalie matérielle\" est vide, et les deux signatures de vérification du moniteur sont présentes."},
+  {icon:"📱",type:"Message de l'encadrant",contenu:"Un message reçu après la session : \"Bonne journée ! Petite chose : vous avez oublié de rendre un baudrier au retour — il faudrait passer le récupérer.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"Le moniteur principal déclare que tous les harnais ont été vérifiés et validés individuellement avant le départ — aucune anomalie n'a été constatée, et aucun incident de harnais mal ajusté n'a été signalé ce jour-là."}
+],
+/* 48 — Karaoké v2 (doublon) */[
+  {icon:"🧾",type:"Note de bar",contenu:"La note de bar retrouvée dans vos affaires ne mentionne aucune consommation aux horaires que vous décrivez — la première commande à votre table est enregistrée bien plus tard dans la soirée."},
+  {icon:"📱",type:"Message reçu",contenu:"Un message reçu après la soirée : \"La veste était à l'entrée depuis le début — on s'est demandés à qui elle était pendant toute la soirée.\""},
+  {icon:"👁️",type:"Témoignage",contenu:"L'animateur déclare que son micro n'a connu aucun incident technique ce soir-là — tout incident de ce type est consigné dans le rapport matériel, qui est vierge."}
+]
+];
 const SCENARIOS=[
 {
   title:"🎤 Concert — la pièce d'identité oubliée",
@@ -4467,9 +4773,11 @@ var lobbyGuestReady = false;
 
 function lobbyShow() {
   document.getElementById('lobby-overlay').classList.add('active');
+  document.body.classList.add('in-lobby');
 }
 function lobbyHide() {
   document.getElementById('lobby-overlay').classList.remove('active');
+  document.body.classList.remove('in-lobby');
 }
 function lobbyСopyCode() {
   if (!online.roomId) return;
@@ -4479,7 +4787,7 @@ function lobbyDisconnect() {
   lobbyHide();
   _onlineCleanupRoom();
   online.enabled = false; online.isHost = false; online.roomId = null;
-  onlineSetStatus('Hors ligne', false);
+  chatStop();onlineSetStatus('Hors ligne', false);
   var el = document.getElementById('online-room-code'); if (el) el.textContent = '—';
   toast('Déconnecté', 'warn');
 }
@@ -4557,7 +4865,7 @@ function onlineCreateRoom(){
   var roomRef=online.db.ref('rooms').push();online.roomId=roomRef.key;online.enabled=true;
   roomRef.set({createdAt:firebase.database.ServerValue.TIMESTAMP,hostId:online.playerId,status:'waiting',participants:{},homeSnap:null,game:null})
   .then(function(){
-    onlineRegisterParticipant();onlineListenRoom();onlineSetRoomCode(online.roomId);onlineSetStatus('\uD83D\uDC51 H\u00f4te (Insp. A)',true);
+    onlineRegisterParticipant();onlineListenRoom();chatListen();preuveListen();onlineSetRoomCode(online.roomId);onlineSetStatus('\uD83D\uDC51 H\u00f4te (Insp. A)',true);
     lobbySetCode(online.roomId);lobbySetHostName(online.playerName);lobbyUpdateGuest(null,false,false);
     lobbyShow();
     toast('\uD83C\uDF10 Partie cr\u00e9\u00e9e ! Partage le code.','ok');
@@ -4571,7 +4879,7 @@ function onlineJoinRoom(){
   online.playerName=onlineGetName();online.playerId='guest_'+Date.now().toString(36);online.roomId=code;online.isHost=false;online.enabled=true;
   online.db.ref('rooms/'+code).once('value').then(function(snap){
     if(!snap.exists()){online.enabled=false;toast('Code introuvable','danger');onlineSetStatus('Hors ligne',false);return;}
-    onlineRegisterParticipant();onlineListenRoom();onlineSetRoomCode(code);onlineSetStatus('\uD83D\uDC64 Invit\u00e9 (Insp. B)',true);
+    onlineRegisterParticipant();onlineListenRoom();chatListen();preuveListen();onlineSetRoomCode(code);onlineSetStatus('\uD83D\uDC64 Invit\u00e9 (Insp. B)',true);
     lobbySetCode(code);lobbyUpdateGuest(online.playerName,true,false);
     lobbyShow();
     toast('\uD83D\uDD17 Rejoint ! En attente du lancement…','ok');
@@ -5727,7 +6035,7 @@ function _onlineCleanupRoom(){
   /* Reset l'etat online pour une nouvelle partie */
   online.roomId=null;
   online.enabled=false;
-  online.lastHomeToken=null;
+  chatStop();online.lastHomeToken=null;
   online.lastGameToken=null;
   var code=document.getElementById('online-room-code');
   if(code)code.textContent='—';
@@ -5832,6 +6140,7 @@ function startCountdown(callback) {
 ══════════════════════════════════════════════ */
 function inspOpen() {
   if (!state.pairs.length) { toast('Lance une manche d\'abord !', 'warn'); return; }
+  preuveInitBtn();
   inspRefresh();
   document.getElementById('insp-overlay').classList.add('active');
   document.getElementById('insp-ans').focus();
@@ -12548,6 +12857,158 @@ if(!_SPEC_IS_SPEC){
   })();
 }
 
+/* ══ PREUVES EN DIRECT ══ */
+var _preuveTimer=null,_preuveUsed=[];
+function preuveDeclencher(){
+  var sc=state.scenarios&&state.scenarios.a;
+  var idx=sc?SCENARIOS.indexOf(sc):-1;
+  var pool=idx>=0?SCENARIO_PREUVES[idx]:null;
+  if(!pool||!pool.length){toast('Aucune preuve disponible pour ce scénario','warn');return;}
+  var remaining=pool.map(function(_,i){return i;}).filter(function(i){return _preuveUsed.indexOf(i)===-1;});
+  if(!remaining.length){toast('Toutes les preuves ont déjà été jouées','warn');return;}
+  var pick=remaining[Math.floor(Math.random()*remaining.length)];
+  _preuveUsed.push(pick);
+  var p=pool[pick];
+  var btn=document.getElementById('insp-btn-preuve');
+  var left=remaining.length-1;
+  if(btn){btn.textContent='🚨 Preuve'+(left>0?' ('+left+')':'');if(left===0)btn.disabled=true;}
+  if(online.enabled&&online.db&&online.roomId){
+    online.db.ref('rooms/'+online.roomId+'/preuve_active').set({type:p.type,icon:p.icon,contenu:p.contenu,ts:firebase.database.ServerValue.TIMESTAMP});
+  } else {
+    preuveAfficher(p);
+  }
+}
+function preuveAfficher(p){
+  document.getElementById('preuve-typelabel').textContent=p.type;
+  document.getElementById('preuve-icon').textContent=p.icon;
+  document.getElementById('preuve-contenu').textContent=p.contenu;
+  var fill=document.getElementById('preuve-timefill');
+  var cd=document.getElementById('preuve-countdown');
+  fill.style.transition='none';fill.style.width='100%';
+  setTimeout(function(){fill.style.transition='width 30s linear';fill.style.width='0%';},60);
+  var secs=30;cd.textContent=secs+'s restantes';
+  clearInterval(_preuveTimer);
+  _preuveTimer=setInterval(function(){secs--;cd.textContent=secs+'s restantes';if(secs<=0){clearInterval(_preuveTimer);preuveClose();}},1000);
+  document.getElementById('preuve-overlay').classList.add('active');
+}
+function preuveClose(){
+  clearInterval(_preuveTimer);
+  document.getElementById('preuve-overlay').classList.remove('active');
+  if(online.enabled&&online.db&&online.roomId){online.db.ref('rooms/'+online.roomId+'/preuve_active').remove();}
+}
+function preuveListen(){
+  if(!online.db||!online.roomId)return;
+  online.db.ref('rooms/'+online.roomId+'/preuve_active').on('value',function(snap){
+    if(snap.exists())preuveAfficher(snap.val());
+    else{clearInterval(_preuveTimer);document.getElementById('preuve-overlay').classList.remove('active');}
+  });
+}
+function preuveInitBtn(){
+  var btn=document.getElementById('insp-btn-preuve');
+  if(!btn)return;
+  var on=document.getElementById('preuves-mode')&&document.getElementById('preuves-mode').checked;
+  if(!on){btn.style.display='none';return;}
+  var sc=state.scenarios&&state.scenarios.a;
+  var idx=sc?SCENARIOS.indexOf(sc):-1;
+  var pool=idx>=0?SCENARIO_PREUVES[idx]:null;
+  if(!pool||!pool.length){btn.style.display='none';return;}
+  _preuveUsed=[];
+  btn.style.display='';
+  btn.disabled=false;
+  btn.textContent='🚨 Preuve ('+pool.length+')';
+}
+
+/* ─── CHAT EN LIGNE ─── */
+var _chatOpen=false,_chatUnread=0,_chatRef=null;
+function toggleChat(){
+  _chatOpen=!_chatOpen;
+  document.getElementById('chat-panel').classList.toggle('open',_chatOpen);
+  if(_chatOpen){
+    _chatUnread=0;
+    var badge=document.getElementById('chat-badge');
+    badge.classList.remove('show');badge.textContent='';
+    var msgs=document.getElementById('chat-messages');
+    msgs.scrollTop=msgs.scrollHeight;
+    document.getElementById('chat-input').focus();
+  }
+}
+function chatSend(){
+  var inp=document.getElementById('chat-input');
+  var text=inp.value.trim();
+  if(!text||!online.db||!online.roomId)return;
+  online.db.ref('rooms/'+online.roomId+'/chat').push({
+    author:online.playerName||'Joueur',
+    text:text,
+    ts:firebase.database.ServerValue.TIMESTAMP
+  });
+  inp.value='';
+}
+function chatListen(){
+  if(!online.db||!online.roomId)return;
+  if(_chatRef)_chatRef.off();
+  _chatRef=online.db.ref('rooms/'+online.roomId+'/chat').limitToLast(50);
+  var msgs=document.getElementById('chat-messages');
+  msgs.innerHTML='';
+  _chatRef.on('child_added',function(snap){
+    var d=snap.val();
+    var isMe=(d.author===(online.playerName||'Joueur'));
+    var div=document.createElement('div');
+    div.className='chat-msg'+(isMe?' chat-mine':'');
+    div.innerHTML='<span class="chat-author">'+d.author+'</span><span class="chat-text">'+d.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</span>';
+    msgs.appendChild(div);
+    msgs.scrollTop=msgs.scrollHeight;
+    if(!_chatOpen){
+      _chatUnread++;
+      var badge=document.getElementById('chat-badge');
+      badge.textContent=_chatUnread>9?'9+':String(_chatUnread);
+      badge.classList.add('show');
+    }
+  });
+  document.getElementById('btn-chat').classList.add('visible');
+}
+function chatStop(){
+  if(_chatRef){_chatRef.off();_chatRef=null;}
+  document.getElementById('btn-chat').classList.remove('visible');
+  document.getElementById('chat-panel').classList.remove('open');
+  document.getElementById('chat-messages').innerHTML='';
+  _chatOpen=false;_chatUnread=0;
+}
+var _emojiOpen=false;
+var _EMOJIS=[
+'😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','🫠','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','🥲','😋','😛','😜','🤪','😝','🤑','🤗','🫡','🤭','🫢','🫣','🤫','🤔','🫤','😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤮','🤧','🥵','🥶','🥴','😵','🤯','🤠','🥸','😎','🤓','🧐','😕','🫥','😟','🙁','😮','😯','😲','😳','🥺','🫹','😦','😧','😨','😰','😥','😢','😭','😱','😖','😣','😞','😓','😩','😫','🥱','😤','😡','😠','🤬','😈','👿','💀','☠️','💩','🤡','👹','👺','👻','👽','👾','🤖',
+'👋','🤚','🖐️','✋','🖖','🫱','🫲','🫳','🫴','👌','🤌','🤏','✌️','🤞','🫰','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','🫵','👍','👎','✊','👊','🤛','🤜','👏','🙌','🫶','👐','🤲','🤝','🙏','✍️','💅','🤳','💪','🦾','🦿','🦵','🦶','👂','🦻','👃','👀','👁️','🫦','👅','🧠',
+'🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐔','🐧','🐦','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🪱','🐛','🦋','🐌','🐞','🐜','🪲','🦟','🦗','🕷️','🦂','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐','🦞','🦀','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🦭','🐊','🐅','🐆','🦓','🦍','🦧','🦣','🐘','🦛','🦏','🐪','🐫','🦒','🦘','🦬','🐃','🐂','🐄','🐎','🐖','🐏','🐑','🦙','🐐','🦌','🐕','🐩','🦮','🐕‍🦺','🐈','🐈‍⬛','🐓','🦃','🦤','🦚','🦜','🦢','🦩','🕊️','🐇','🦝','🦨','🦡','🦫','🦦','🦥','🐁','🐀','🐿️','🦔',
+'🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍈','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌶️','🫑','🧄','🧅','🥔','🍠','🥐','🥯','🍞','🥖','🥨','🧀','🥚','🍳','🧈','🥞','🧇','🥓','🥩','🍗','🍖','🦴','🌮','🌯','🫔','🥙','🧆','🥚','🍱','🍘','🍙','🍚','🍛','🍜','🍝','🍠','🍢','🍣','🍤','🍥','🥮','🍡','🥟','🦪','🍦','🍧','🍨','🍩','🍪','🎂','🍰','🧁','🥧','🍫','🍬','🍭','🍮','🍯','🍼','🥛','☕','🫖','🍵','🧃','🥤','🧋','🍶','🍺','🍻','🥂','🍷','🥃','🍸','🍹','🧉','🍾',
+'⚽','🏀','🏈','⚾','🥎','🎾','🏐','🏉','🥏','🎱','🏓','🏸','🏒','🥊','🥋','🎽','🛹','🛼','🛷','⛸️','🥅','⛳','🎿','🎯','🪃','🎣','🏋️','🤸','🤼','🤺','🤾','🏌️','🏇','🧘','🏄','🏊','🤽','🚴','🏆','🥇','🥈','🥉','🎖️','🏅','🎗️','🎮','🎲','🎭','🎪','🎨','🖼️','🎬','🎤','🎧','🎼','🎹','🥁','🪘','🎷','🎺','🎸','🪕','🎻','🎙️',
+'🚗','🚕','🚙','🚌','🚎','🏎️','🚓','🚑','🚒','🚐','🛻','🚚','🚛','🚜','🏍️','🛵','🚲','🛴','🛺','🚁','🛸','⛵','🚢','✈️','🚀','🛰️','⛽','🚦','🗺️','🏔️','⛰️','🌋','🗾','🏕️','🏖️','🏜️','🏝️','🏟️','🏛️','🏗️','🧱','🏠','🏡','🏢','🏣','🏤','🏥','🏦','🏨','🏩','🏪','🏫','🏬','🏭','🏯','🗼','🗽','⛪','🕌','🛕','🕍','⛩️','🗺️',
+'⌚','📱','💻','⌨️','🖥️','🖨️','🖱️','🖲️','💾','💿','📀','📷','📸','📹','🎥','📽️','📞','☎️','📟','📺','📻','🧭','⏱️','⏰','⌛','📡','🔋','🔌','💡','🔦','🕯️','🪔','🧯','🛢️','💰','💴','💵','💶','💷','💸','💳','🪙','💎','⚖️','🔑','🗝️','🔓','🔒','🔨','🪓','⛏️','⚒️','🛠️','🔧','🔩','⚙️','🗜️','🔗','⛓️','🪝','🧲','🪜','🧰','🪣','🧲','💊','💉','🩸','🩹','🩺','🔬','🔭','🩻','📋','📌','📍','✂️','🗃️','🗄️','🗑️','🔐','📦','📫','📬','📭','📮','🗳️','✏️','✒️','🖊️','🖋️','📝','📖','📚','📎','🖇️','📐','📏','🗒️','🗓️','📅','📆','🗑️',
+'❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','💟','☮️','✝️','☪️','🕉️','☸️','✡️','🔯','🕎','☯️','☦️','🛐','⛎','♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓','🆔','⚛️','🉑','☢️','☣️','📴','📳','🈶','🈚','🈸','🈺','🈷️','✴️','🆚','💮','🉐','㊙️','㊗️','🈴','🈵','🈹','🈲','🅰️','🅱️','🆎','🆑','🅾️','🆘','❌','⭕','🛑','⛔','📛','🚫','💯','💢','♨️','🚷','🚯','🚳','🚱','🔞','📵','🚭','❗','❕','❓','❔','‼️','⁉️','🔅','🔆','📶','🈁','🔱','⚜️','🔰','♻️','✅','🈯','💹','❎','🌐','💠','Ⓜ️','🌀','💤','🏧','🚾','♿','🅿️','🛗','🈳','🈹','🚺','🚹','🚼','⚧️','🚻','🚮','🎦','📵','🔕','🎵','🎶','✨','🎊','🎉','🎈','🎀','🎁','🎗️','🎟️','🎫'
+];
+function toggleEmojiPicker(){
+  _emojiOpen=!_emojiOpen;
+  var picker=document.getElementById('chat-emoji-picker');
+  if(_emojiOpen&&picker.childElementCount===0){
+    _EMOJIS.forEach(function(e){
+      var s=document.createElement('span');
+      s.textContent=e;
+      s.title=e;
+      s.onclick=function(){
+        var inp=document.getElementById('chat-input');
+        inp.value+=e;
+        inp.focus();
+      };
+      picker.appendChild(s);
+    });
+  }
+  picker.classList.toggle('open',_emojiOpen);
+}
+document.addEventListener('click',function(ev){
+  if(_emojiOpen&&!ev.target.closest('#chat-emoji-picker')&&ev.target.id!=='chat-emoji-btn'){
+    _emojiOpen=false;
+    document.getElementById('chat-emoji-picker').classList.remove('open');
+  }
+});
+
 /* ─── Ouvrir l'onglet spectateur directement ─── */
 function openSpectateur(){
   var url=window.location.href.split('#')[0]+'#spectateur';
@@ -12774,6 +13235,31 @@ if(_SPEC_IS_SPEC){
 
 <!-- ══ BOUTON SPECTATEUR (fixe) ══ -->
 <button id="btn-spectateur" onclick="openSpectateur()" title="Ouvrir le mode Spectateur (2ème écran)">📺</button>
+<div id="preuve-overlay">
+  <div id="preuve-card">
+    <div id="preuve-scan"></div>
+    <div id="preuve-head"><span id="preuve-badge">🚨 Nouvelle preuve</span></div>
+    <div id="preuve-timebar"><div id="preuve-timefill"></div></div>
+    <div id="preuve-body">
+      <div id="preuve-typelabel"></div>
+      <div id="preuve-icon"></div>
+      <div id="preuve-contenu"></div>
+      <div id="preuve-countdown"></div>
+      <button id="preuve-close" onclick="preuveClose()">Compris — continuer l'interrogatoire</button>
+    </div>
+  </div>
+</div>
+<button id="btn-chat" title="Chat en ligne" onclick="toggleChat()">💬<span id="chat-badge"></span></button>
+<div id="chat-panel">
+  <div id="chat-header"><span>💬 Chat</span><button onclick="toggleChat()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;line-height:1">✕</button></div>
+  <div id="chat-messages"></div>
+  <div id="chat-emoji-picker"></div>
+  <div id="chat-input-row">
+    <button id="chat-emoji-btn" onclick="toggleEmojiPicker()" title="Emojis">😊</button>
+    <input id="chat-input" placeholder="Message..." maxlength="200" onkeydown="if(event.key==='Enter')chatSend()"/>
+    <button id="chat-send" onclick="chatSend()">↑</button>
+  </div>
+</div>
 
 <!-- ══ PWA INSTALL BANNER ══ -->
 <div id="pwa-banner" style="display:none;position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:9000;background:var(--coal);border:1px solid rgba(var(--gold-rgb),.4);border-radius:8px;padding:12px 18px;display:none;align-items:center;gap:14px;box-shadow:0 8px 32px rgba(0,0,0,.6);max-width:calc(100vw - 32px);animation:fadeIn .4s var(--ease-hud);">
