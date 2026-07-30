@@ -12997,7 +12997,7 @@ async function voiceJoin(channelId){
   if(!channelId){toast('Rejoins une partie d\'abord','warn');return;}
   if(!window.AgoraRTC){toast('Agora non chargé','danger');return;}
   try{
-    _agoraClient=AgoraRTC.createClient({mode:'rtc',codec:'opus'});
+    _agoraClient=AgoraRTC.createClient({mode:'rtc',codec:'vp8'});
     _agoraClient.on('user-published',async function(user,mediaType){
       await _agoraClient.subscribe(user,mediaType);
       if(mediaType==='audio')user.audioTrack.play();
