@@ -31,12 +31,12 @@
     },
     "mac": {
       "target": "dmg",
-      "icon": "logoiconfinal-rounded.ico",
+      "icon": "icon.png",
       "category": "public.app-category.games"
     },
     "linux": {
       "target": "AppImage",
-      "icon": "logoiconfinal-rounded.ico",
+      "icon": "icon.png",
       "category": "Game"
     }
   },
