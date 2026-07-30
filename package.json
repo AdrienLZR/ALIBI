@@ -1,6 +1,6 @@
 {
   "name": "jeux-alibi",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Alibi — le jeu d'enquête entre amis",
   "main": "main.js",
   "scripts": {
