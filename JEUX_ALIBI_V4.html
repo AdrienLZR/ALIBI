@@ -2038,9 +2038,17 @@ html.spectator-mode #spectator-view{display:flex;}
 #btn-spectateur:hover{border-color:var(--gold);box-shadow:0 0 10px rgba(var(--gold-rgb),.2);}
 @media(max-width:600px){#btn-spectateur{bottom:calc(env(safe-area-inset-bottom,0px)+8px);right:56px;}}
 body.in-lobby #btn-chat{display:none!important;}
+body.in-lobby #btn-voice{display:none!important;}
 #btn-chat{display:none;position:fixed;bottom:50px;right:10px;z-index:240;width:40px;height:40px;border-radius:50%;background:var(--coal);border:1px solid var(--wire);cursor:pointer;align-items:center;justify-content:center;font-size:1.2rem;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.4);}
 #btn-chat.visible{display:flex;}
 #btn-chat:hover{border-color:var(--gold);box-shadow:0 0 12px rgba(var(--gold-rgb),.3);}
+#btn-voice{display:none;position:fixed;bottom:50px;right:58px;z-index:240;width:40px;height:40px;border-radius:50%;background:var(--coal);border:1px solid var(--wire);cursor:pointer;align-items:center;justify-content:center;font-size:1.1rem;transition:border-color .2s,box-shadow .15s,background .2s;box-shadow:0 2px 8px rgba(0,0,0,.4);}
+#btn-voice.visible{display:flex;}
+#btn-voice:hover{border-color:#aaa;}
+#btn-voice.active{border-color:#4ade80;box-shadow:0 0 12px rgba(74,222,128,.4);}
+#btn-voice.active:hover{border-color:#86efac;}
+#btn-voice.active.muted{border-color:rgba(200,30,30,.7);background:rgba(200,30,30,.12);box-shadow:none;}
+#btn-voice.active.speaking{border-color:#4fc3f7;box-shadow:0 0 18px rgba(79,195,247,.55);}
 #chat-badge{position:absolute;top:-4px;right:-4px;background:#c81e1e;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;display:none;align-items:center;justify-content:center;font-family:var(--hud-font);font-weight:700;}
 #chat-badge.show{display:flex;}
 #chat-panel{display:none;position:fixed;bottom:104px;right:10px;width:360px;max-height:620px;background:var(--coal);border:1px solid rgba(var(--gold-rgb),.25);border-radius:8px;z-index:500;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.6);overflow:hidden;}
@@ -2260,6 +2268,7 @@ body.in-lobby #btn-chat{display:none!important;}
     <div class="lobby-footer">
       <div class="lobby-hint" id="lobby-hint">En attente que l'invité rejoigne la partie…</div>
       <div style="display:flex;gap:8px;align-items:center;">
+        <button class="lobby-disconnect-btn" onclick="voiceToggle()" id="lobby-btn-voice" title="Activer le vocal" style="font-size:1.1rem;padding:0 12px;">🎤</button>
         <button class="lobby-disconnect-btn" onclick="toggleChat()" title="Chat" style="font-size:1.1rem;padding:0 12px;">💬</button>
         <button class="lobby-disconnect-btn" onclick="lobbyDisconnect()">✕ Quitter</button>
         <button class="lobby-launch-btn" id="lobby-launch-btn" disabled onclick="lobbyLaunch()">🚀 Lancer la manche</button>
@@ -3172,6 +3181,8 @@ body.in-lobby #btn-chat{display:none!important;}
 <!-- Firebase compat SDK - ajouté par Copilot pour le mode en ligne -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<!-- Agora Web SDK — chat vocal en ligne -->
+<script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.20.2.js"></script>
 <script>
 const SCENARIO_PREUVES=[
 /* 0 — Concert */[
@@ -4787,7 +4798,7 @@ function lobbyDisconnect() {
   lobbyHide();
   _onlineCleanupRoom();
   online.enabled = false; online.isHost = false; online.roomId = null;
-  chatStop();onlineSetStatus('Hors ligne', false);
+  chatStop();voiceLeave();onlineSetStatus('Hors ligne', false);
   var el = document.getElementById('online-room-code'); if (el) el.textContent = '—';
   toast('Déconnecté', 'warn');
 }
@@ -6035,7 +6046,7 @@ function _onlineCleanupRoom(){
   /* Reset l'etat online pour une nouvelle partie */
   online.roomId=null;
   online.enabled=false;
-  chatStop();online.lastHomeToken=null;
+  chatStop();voiceLeave();online.lastHomeToken=null;
   online.lastGameToken=null;
   var code=document.getElementById('online-room-code');
   if(code)code.textContent='—';
@@ -12965,14 +12976,72 @@ function chatListen(){
     }
   });
   document.getElementById('btn-chat').classList.add('visible');
+  document.getElementById('btn-voice').classList.add('visible');
 }
 function chatStop(){
   if(_chatRef){_chatRef.off();_chatRef=null;}
   document.getElementById('btn-chat').classList.remove('visible');
+  document.getElementById('btn-voice').classList.remove('visible','active','muted','speaking');
   document.getElementById('chat-panel').classList.remove('open');
   document.getElementById('chat-messages').innerHTML='';
   _chatOpen=false;_chatUnread=0;
 }
+
+/* ══ VOIX EN LIGNE (Agora) ══ */
+var _AGORA_APP_ID='c19e7cc8de2e4991a748daf480a518a9';
+var _agoraClient=null,_agoraLocalTrack=null,_agoraMuted=false,_agoraVolumeTimer=null;
+async function voiceToggle(){
+  if(_agoraClient){await voiceLeave();}else{await voiceJoin(online.roomId);}
+}
+async function voiceJoin(channelId){
+  if(!channelId){toast('Rejoins une partie d\'abord','warn');return;}
+  if(!window.AgoraRTC){toast('Agora non chargé','danger');return;}
+  try{
+    _agoraClient=AgoraRTC.createClient({mode:'rtc',codec:'opus'});
+    _agoraClient.on('user-published',async function(user,mediaType){
+      await _agoraClient.subscribe(user,mediaType);
+      if(mediaType==='audio')user.audioTrack.play();
+    });
+    _agoraClient.on('user-unpublished',function(user){_agoraClient.unsubscribe(user);});
+    await _agoraClient.join(_AGORA_APP_ID,channelId,null,null);
+    _agoraLocalTrack=await AgoraRTC.createMicrophoneAudioTrack();
+    await _agoraClient.publish(_agoraLocalTrack);
+    _agoraMuted=false;
+    var btn=document.getElementById('btn-voice');
+    if(btn)btn.classList.add('active');
+    voiceUpdateBtn();
+    _agoraVolumeTimer=setInterval(function(){
+      if(!_agoraLocalTrack||_agoraMuted)return;
+      var vol=_agoraLocalTrack.getVolumeLevel();
+      var b=document.getElementById('btn-voice');
+      if(b)b.classList.toggle('speaking',vol>0.05);
+    },200);
+    toast('🎤 Vocal actif','ok');
+  }catch(e){toast('Erreur vocal : '+e.message,'danger');console.error(e);}
+}
+async function voiceLeave(){
+  clearInterval(_agoraVolumeTimer);_agoraVolumeTimer=null;
+  if(_agoraLocalTrack){_agoraLocalTrack.close();_agoraLocalTrack=null;}
+  if(_agoraClient){try{await _agoraClient.leave();}catch(e){}_agoraClient=null;}
+  var btn=document.getElementById('btn-voice');
+  if(btn){btn.classList.remove('active','muted','speaking');btn.textContent='🎤';btn.title='Activer le vocal';}
+  var lbtn=document.getElementById('lobby-btn-voice');
+  if(lbtn){lbtn.textContent='🎤';}
+}
+function voiceMuteToggle(){
+  if(!_agoraLocalTrack){voiceToggle();return;}
+  _agoraMuted=!_agoraMuted;
+  _agoraLocalTrack.setMuted(_agoraMuted);
+  voiceUpdateBtn();
+}
+function voiceUpdateBtn(){
+  var icon=_agoraMuted?'🔇':'🎤';
+  var btn=document.getElementById('btn-voice');
+  if(btn){btn.textContent=icon;btn.classList.toggle('muted',_agoraMuted);btn.title=_agoraMuted?'Réactiver le micro':'Couper le micro';}
+  var lbtn=document.getElementById('lobby-btn-voice');
+  if(lbtn)lbtn.textContent=icon;
+}
+
 var _emojiOpen=false;
 var _EMOJIS=[
 '😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','🫠','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','🥲','😋','😛','😜','🤪','😝','🤑','🤗','🫡','🤭','🫢','🫣','🤫','🤔','🫤','😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤮','🤧','🥵','🥶','🥴','😵','🤯','🤠','🥸','😎','🤓','🧐','😕','🫥','😟','🙁','😮','😯','😲','😳','🥺','🫹','😦','😧','😨','😰','😥','😢','😭','😱','😖','😣','😞','😓','😩','😫','🥱','😤','😡','😠','🤬','😈','👿','💀','☠️','💩','🤡','👹','👺','👻','👽','👾','🤖',
@@ -13249,6 +13318,7 @@ if(_SPEC_IS_SPEC){
     </div>
   </div>
 </div>
+<button id="btn-voice" title="Activer le vocal" onclick="voiceToggle()">🎤</button>
 <button id="btn-chat" title="Chat en ligne" onclick="toggleChat()">💬<span id="chat-badge"></span></button>
 <div id="chat-panel">
   <div id="chat-header"><span>💬 Chat</span><button onclick="toggleChat()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;line-height:1">✕</button></div>
