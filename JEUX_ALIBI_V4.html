@@ -13671,7 +13671,7 @@ var _specClockInterval = null;
 
 function joinAsSpectator(){
   var inp = document.getElementById('online-room-input');
-  var code = (inp ? inp.value.trim() : '').toUpperCase();
+  var code = (inp ? inp.value.trim() : '');
   if(!code){ toast('Entre le code de la partie à observer','warn'); return; }
   if(!onlineInitFirebase()){ toast('Impossible d\'initialiser Firebase','danger'); return; }
   toast('🔍 Connexion spectateur…','ok');
