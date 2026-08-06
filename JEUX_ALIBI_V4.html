@@ -3181,8 +3181,6 @@ body.in-lobby #btn-voice{display:none!important;}
 <!-- Firebase compat SDK - ajouté par Copilot pour le mode en ligne -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<!-- Agora Web SDK — chat vocal en ligne -->
-<script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.20.2.js"></script>
 <script>
 const SCENARIO_PREUVES=[
 /* 0 — Concert */[
@@ -12987,57 +12985,112 @@ function chatStop(){
   _chatOpen=false;_chatUnread=0;
 }
 
-/* ══ VOIX EN LIGNE (Agora) ══ */
-var _AGORA_APP_ID='375f5e5f408b4831bcfe110ab04adb79';
-var _agoraClient=null,_agoraLocalTrack=null,_agoraMuted=false,_agoraVolumeTimer=null;
+/* ══ VOIX EN LIGNE (WebRTC natif + Firebase signaling) ══ */
+var _rtcPeer=null,_rtcStream=null,_rtcMuted=false,_rtcActive=false,_rtcVolumeTimer=null,_rtcAudioEl=null;
+var _rtcIceServers=[
+  {urls:'stun:stun.l.google.com:19302'},
+  {urls:'stun:stun1.l.google.com:19302'},
+  {urls:'stun:stun2.l.google.com:19302'}
+];
+
 async function voiceToggle(){
-  if(_agoraClient){await voiceLeave();}else{await voiceJoin(online.roomId);}
+  if(_rtcActive){voiceLeave();}else{await voiceJoin();}
 }
-async function voiceJoin(channelId){
-  if(!channelId){toast('Rejoins une partie d\'abord','warn');return;}
-  if(!window.AgoraRTC){toast('Agora non chargé','danger');return;}
+
+async function voiceJoin(){
+  if(!online.roomId){toast('Rejoins une partie d\'abord','warn');return;}
   try{
-    _agoraClient=AgoraRTC.createClient({mode:'rtc',codec:'vp8'});
-    _agoraClient.on('user-published',async function(user,mediaType){
-      await _agoraClient.subscribe(user,mediaType);
-      if(mediaType==='audio')user.audioTrack.play();
+    _rtcStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+    _rtcPeer=new RTCPeerConnection({iceServers:_rtcIceServers});
+    _rtcStream.getTracks().forEach(function(t){_rtcPeer.addTrack(t,_rtcStream);});
+
+    _rtcPeer.ontrack=function(e){
+      if(_rtcAudioEl){_rtcAudioEl.srcObject=null;}
+      _rtcAudioEl=new Audio();
+      _rtcAudioEl.srcObject=e.streams[0];
+      _rtcAudioEl.autoplay=true;
+      _rtcAudioEl.play().catch(function(){});
+    };
+
+    var localRole=online.isHost?'host':'guest';
+    var remoteRole=online.isHost?'guest':'host';
+    var rtcRef=online.db.ref('rooms/'+online.roomId+'/rtc');
+
+    _rtcPeer.onicecandidate=function(e){
+      if(e.candidate)rtcRef.child('ice_'+localRole).push(e.candidate.toJSON());
+    };
+
+    rtcRef.child('ice_'+remoteRole).on('child_added',function(snap){
+      if(_rtcPeer&&snap.val())_rtcPeer.addIceCandidate(new RTCIceCandidate(snap.val())).catch(function(){});
     });
-    _agoraClient.on('user-unpublished',function(user){_agoraClient.unsubscribe(user);});
-    await _agoraClient.join(_AGORA_APP_ID,channelId,null,null);
-    _agoraLocalTrack=await AgoraRTC.createMicrophoneAudioTrack();
-    await _agoraClient.publish(_agoraLocalTrack);
-    _agoraMuted=false;
+
+    if(online.isHost){
+      var offer=await _rtcPeer.createOffer();
+      await _rtcPeer.setLocalDescription(offer);
+      rtcRef.child('offer').set({type:offer.type,sdp:offer.sdp});
+      rtcRef.child('answer').on('value',async function(snap){
+        if(snap.exists()&&_rtcPeer&&!_rtcPeer.currentRemoteDescription){
+          await _rtcPeer.setRemoteDescription(new RTCSessionDescription(snap.val()));
+        }
+      });
+    } else {
+      var offerSnap=await rtcRef.child('offer').once('value');
+      if(!offerSnap.exists()){toast('L\'hôte n\'a pas encore activé le vocal','warn');voiceLeave();return;}
+      await _rtcPeer.setRemoteDescription(new RTCSessionDescription(offerSnap.val()));
+      var answer=await _rtcPeer.createAnswer();
+      await _rtcPeer.setLocalDescription(answer);
+      rtcRef.child('answer').set({type:answer.type,sdp:answer.sdp});
+    }
+
+    _rtcMuted=false;_rtcActive=true;
     var btn=document.getElementById('btn-voice');
     if(btn)btn.classList.add('active');
     voiceUpdateBtn();
-    _agoraVolumeTimer=setInterval(function(){
-      if(!_agoraLocalTrack||_agoraMuted)return;
-      var vol=_agoraLocalTrack.getVolumeLevel();
+
+    var actx=new AudioContext();
+    var src=actx.createMediaStreamSource(_rtcStream);
+    var analyser=actx.createAnalyser();analyser.fftSize=256;
+    src.connect(analyser);
+    var data=new Uint8Array(analyser.frequencyBinCount);
+    _rtcVolumeTimer=setInterval(function(){
+      if(!_rtcActive||_rtcMuted)return;
+      analyser.getByteFrequencyData(data);
+      var vol=data.reduce(function(a,b){return a+b;},0)/data.length;
       var b=document.getElementById('btn-voice');
-      if(b)b.classList.toggle('speaking',vol>0.05);
+      if(b)b.classList.toggle('speaking',vol>8);
     },200);
+
     toast('🎤 Vocal actif','ok');
-  }catch(e){toast('Erreur vocal : '+e.message,'danger');console.error(e);}
+  }catch(e){toast('Erreur vocal : '+e.message,'danger');console.error(e);voiceLeave();}
 }
-async function voiceLeave(){
-  clearInterval(_agoraVolumeTimer);_agoraVolumeTimer=null;
-  if(_agoraLocalTrack){_agoraLocalTrack.close();_agoraLocalTrack=null;}
-  if(_agoraClient){try{await _agoraClient.leave();}catch(e){}_agoraClient=null;}
+
+function voiceLeave(){
+  clearInterval(_rtcVolumeTimer);_rtcVolumeTimer=null;
+  if(_rtcStream){_rtcStream.getTracks().forEach(function(t){t.stop();});_rtcStream=null;}
+  if(_rtcPeer){_rtcPeer.close();_rtcPeer=null;}
+  if(_rtcAudioEl){_rtcAudioEl.srcObject=null;_rtcAudioEl=null;}
+  if(online.db&&online.roomId){
+    try{online.db.ref('rooms/'+online.roomId+'/rtc').off();}catch(e){}
+    if(online.isHost)online.db.ref('rooms/'+online.roomId+'/rtc').remove().catch(function(){});
+  }
+  _rtcActive=false;_rtcMuted=false;
   var btn=document.getElementById('btn-voice');
   if(btn){btn.classList.remove('active','muted','speaking');btn.textContent='🎤';btn.title='Activer le vocal';}
   var lbtn=document.getElementById('lobby-btn-voice');
-  if(lbtn){lbtn.textContent='🎤';}
+  if(lbtn)lbtn.textContent='🎤';
 }
+
 function voiceMuteToggle(){
-  if(!_agoraLocalTrack){voiceToggle();return;}
-  _agoraMuted=!_agoraMuted;
-  _agoraLocalTrack.setMuted(_agoraMuted);
+  if(!_rtcActive){voiceToggle();return;}
+  _rtcMuted=!_rtcMuted;
+  if(_rtcStream)_rtcStream.getAudioTracks().forEach(function(t){t.enabled=!_rtcMuted;});
   voiceUpdateBtn();
 }
+
 function voiceUpdateBtn(){
-  var icon=_agoraMuted?'🔇':'🎤';
+  var icon=_rtcMuted?'🔇':'🎤';
   var btn=document.getElementById('btn-voice');
-  if(btn){btn.textContent=icon;btn.classList.toggle('muted',_agoraMuted);btn.title=_agoraMuted?'Réactiver le micro':'Couper le micro';}
+  if(btn){btn.textContent=icon;btn.classList.toggle('muted',_rtcMuted);btn.title=_rtcMuted?'Réactiver le micro':'Couper le micro';}
   var lbtn=document.getElementById('lobby-btn-voice');
   if(lbtn)lbtn.textContent=icon;
 }
