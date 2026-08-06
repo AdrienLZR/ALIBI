@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -491,6 +491,18 @@ html[data-theme="western"] .logo-title{text-shadow:0 0 16px rgba(212,88,26,.55),
 .lobby-disconnect-btn:hover{color:var(--red2);border-color:var(--red2);}
 @keyframes lobbyPulse{from{opacity:.5;}to{opacity:1;}}
 .lobby-waiting-anim{animation:lobbyPulse .9s ease infinite alternate;}
+/* Kick button */
+.lobby-kick-btn{display:none;position:absolute;top:8px;right:8px;background:transparent;border:1px solid rgba(var(--red-rgb),.25);color:var(--muted);font-size:.6rem;padding:3px 9px;border-radius:3px;cursor:pointer;font-family:var(--hud-font);letter-spacing:.08em;text-transform:uppercase;transition:all .15s;}
+.lobby-kick-btn:hover{background:rgba(var(--red-rgb),.14);border-color:var(--red);color:var(--red2);}
+/* Bannière reconnexion */
+#reconnect-banner{display:none;position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:2001;background:var(--coal);border:1px solid rgba(var(--gold-rgb),.35);border-top:2px solid var(--gold);border-radius:8px;padding:14px 18px;align-items:center;gap:14px;box-shadow:0 6px 24px rgba(0,0,0,.65);max-width:520px;width:92vw;}
+#reconnect-banner.show{display:flex;}
+.reconnect-text{font-size:.82rem;color:var(--paper2);line-height:1.5;flex:1;}
+.reconnect-code{font-family:var(--font-mono);color:var(--gold2);font-weight:700;letter-spacing:.14em;}
+.reconnect-btn{height:36px;padding:0 16px;border:1px solid rgba(var(--gold-rgb),.4);border-radius:4px;background:var(--gold-dim);color:var(--gold2);font-family:var(--hud-font);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.reconnect-btn:hover{background:rgba(var(--gold-rgb),.22);}
+.reconnect-dismiss{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;padding:2px 6px;flex-shrink:0;line-height:1;transition:color .15s;}
+.reconnect-dismiss:hover{color:var(--paper);}
 
 /* ══ OVERLAY ATTENTE EN LIGNE ══ */
 #waiting-overlay{display:none;position:fixed;inset:0;z-index:220;background:rgba(3,4,8,.98);flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:32px;text-align:center;}
@@ -1920,116 +1932,138 @@ html.spectator-mode .cine-bar,
 html.spectator-mode #brightness-btn,
 html.spectator-mode #pwa-banner{display:none!important;}
 
-#spectator-view{display:none;position:fixed;inset:0;z-index:3000;background:var(--black);flex-direction:column;}
+#spectator-view{display:none;position:fixed;inset:0;z-index:3000;background:#06070d;flex-direction:column;}
 html.spectator-mode #spectator-view{display:flex;}
 
-.spec-header{display:flex;align-items:center;justify-content:space-between;padding:18px clamp(20px,5vw,48px);border-bottom:1px solid rgba(var(--gold-rgb),.18);flex-shrink:0;}
-.spec-logo{font-family:var(--font-display);font-size:clamp(1.2rem,3.5vw,2rem);font-weight:700;letter-spacing:.5em;color:var(--red);text-shadow:0 0 22px rgba(var(--red-rgb),.6);}
-.spec-phase-badge{font-family:var(--hud-font);font-size:clamp(.6rem,1.5vw,.85rem);letter-spacing:.3em;text-transform:uppercase;color:var(--gold2);font-weight:700;border:1px solid rgba(var(--gold-rgb),.35);padding:6px 20px;border-radius:4px;background:rgba(var(--gold-rgb),.05);transition:all .5s;}
-.spec-clock{font-family:var(--font-mono);font-size:clamp(.9rem,2vw,1.3rem);color:var(--muted);letter-spacing:.08em;min-width:60px;text-align:right;}
-.spec-pairs{flex:1;display:flex;overflow:hidden;}
-.spec-pair{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(16px,4vw,56px);gap:clamp(6px,1.6vh,18px);position:relative;}
-.spec-pair::after{content:'';position:absolute;right:0;top:8%;bottom:8%;width:1px;background:rgba(var(--gold-rgb),.14);}
+/* ── Header ── */
+.spec-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(20px,4vw,48px);height:52px;flex-shrink:0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  background:rgba(0,0,0,.3);
+  position:relative;
+}
+.spec-header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),rgba(var(--red-rgb),.3),transparent);}
+.spec-logo{font-family:var(--font-display);font-size:clamp(1rem,2.8vw,1.5rem);font-weight:700;letter-spacing:.55em;text-indent:.55em;color:var(--red);text-shadow:0 0 18px rgba(var(--red-rgb),.5);}
+.spec-phase-badge{font-family:var(--hud-font);font-size:clamp(.55rem,1.3vw,.78rem);letter-spacing:.28em;text-transform:uppercase;color:var(--gold2);font-weight:700;border:1px solid rgba(var(--gold-rgb),.28);padding:5px 18px;border-radius:3px;background:rgba(var(--gold-rgb),.04);transition:color .4s,border-color .4s;}
+.spec-header-right{display:flex;align-items:center;gap:16px;}
+.spec-live-pill{display:flex;align-items:center;gap:6px;}
+.spec-live-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:recBlink 1.2s steps(1) infinite;flex-shrink:0;}
+.spec-live-txt{font-family:var(--hud-font);font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);}
+.spec-clock{font-family:var(--font-mono);font-size:clamp(.8rem,1.6vw,1.1rem);color:var(--muted);letter-spacing:.1em;}
+
+/* ── Paires ── */
+.spec-pairs{flex:1;display:flex;overflow:hidden;position:relative;}
+.spec-pair{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:clamp(14px,3vw,44px) clamp(16px,4vw,52px);
+  gap:clamp(5px,1.2vh,14px);position:relative;
+}
+.spec-pair::after{content:'';position:absolute;right:0;top:6%;bottom:6%;width:1px;background:rgba(255,255,255,.06);}
 .spec-pair:last-child::after{display:none;}
-.spec-pair-num{font-family:var(--hud-font);font-size:clamp(.55rem,1.3vw,.8rem);letter-spacing:.5em;text-transform:uppercase;color:var(--muted);}
-.spec-pair-names{font-family:var(--font-display);font-size:clamp(.9rem,3.2vw,2rem);font-weight:700;color:var(--paper);text-align:center;letter-spacing:.04em;line-height:1.2;}
-.spec-score-wrap{display:flex;align-items:baseline;gap:6px;line-height:1;}
-.spec-score{font-family:var(--font-display);font-size:clamp(3.5rem,14vw,9rem);font-weight:700;transition:all .45s var(--ease-hud);}
-.spec-pair.pair-0 .spec-score{color:var(--gold2);text-shadow:0 0 50px rgba(var(--gold-rgb),.3);}
-.spec-pair.pair-1 .spec-score{color:var(--red2);text-shadow:0 0 50px rgba(var(--red-rgb),.3);}
-.spec-score-denom{font-family:var(--hud-font);font-size:clamp(1rem,2.5vw,1.8rem);font-weight:700;color:var(--muted);}
-.spec-prog-wrap{width:min(75%,340px);height:5px;background:var(--iron);border-radius:3px;overflow:hidden;}
-.spec-prog-bar{height:100%;border-radius:3px;transition:width .55s ease;background:linear-gradient(90deg,var(--gold),var(--gold2));}
-.spec-pair.pair-1 .spec-prog-bar{background:linear-gradient(90deg,var(--red),var(--red2));}
-.spec-q-label{font-family:var(--hud-font);font-size:clamp(.5rem,1.2vw,.7rem);letter-spacing:.25em;text-transform:uppercase;color:var(--muted);}
-.spec-footer{padding:10px clamp(20px,5vw,48px);border-top:1px solid rgba(var(--gold-rgb),.1);display:flex;align-items:center;justify-content:center;gap:14px;flex-shrink:0;}
-.spec-live-dot{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:recBlink 1.2s steps(1) infinite;flex-shrink:0;}
-.spec-live-txt{font-family:var(--hud-font);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);}
-/* Score score bump animation */
-@keyframes specScorePop{0%{transform:scale(1);}40%{transform:scale(1.18);}100%{transform:scale(1);}}
+.spec-pair-num{font-family:var(--hud-font);font-size:clamp(.5rem,1vw,.68rem);letter-spacing:.55em;text-transform:uppercase;color:rgba(255,255,255,.2);}
+.spec-pair-names{font-family:var(--font-display);font-size:clamp(.85rem,2.8vw,1.8rem);font-weight:700;color:var(--paper);text-align:center;letter-spacing:.03em;line-height:1.15;}
+.spec-score-wrap{display:flex;align-items:baseline;gap:4px;line-height:1;}
+.spec-score{font-family:var(--font-display);font-size:clamp(4rem,15vw,10rem);font-weight:700;line-height:.9;transition:all .4s var(--ease-hud);}
+.spec-pair.pair-0 .spec-score{color:var(--gold2);text-shadow:0 0 60px rgba(var(--gold-rgb),.25);}
+.spec-pair.pair-1 .spec-score{color:var(--red2);text-shadow:0 0 60px rgba(var(--red-rgb),.25);}
+.spec-score-denom{font-family:var(--hud-font);font-size:clamp(.9rem,2.2vw,1.6rem);font-weight:700;color:rgba(255,255,255,.18);align-self:flex-end;margin-bottom:.3em;}
+.spec-prog-wrap{width:min(70%,320px);height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;}
+.spec-prog-bar{height:100%;border-radius:2px;transition:width .6s cubic-bezier(.25,0,.25,1);}
+.spec-pair.pair-0 .spec-prog-bar{background:linear-gradient(90deg,var(--gold-dim),var(--gold));}
+.spec-pair.pair-1 .spec-prog-bar{background:linear-gradient(90deg,var(--red-dim),var(--red2));}
+.spec-q-label{font-family:var(--hud-font);font-size:clamp(.46rem,1vw,.62rem);letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.22);}
+
+/* ── Réponses ── */
+.spec-answers{width:min(100%,420px);margin-top:2px;display:flex;flex-direction:column;gap:2px;max-height:min(200px,24vh);overflow-y:auto;}
+.spec-answers::-webkit-scrollbar{width:2px;}
+.spec-answers::-webkit-scrollbar-track{background:transparent;}
+.spec-answers::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:1px;}
+.spec-ans-row{display:grid;grid-template-columns:20px 1fr 16px 1fr;gap:4px;align-items:center;padding:3px 8px;border-radius:3px;border:1px solid transparent;transition:background .25s,border-color .25s;}
+.spec-ans-row.has-both{background:rgba(255,255,255,.04);}
+.spec-ans-row.match-yes{background:rgba(49,224,129,.07);border-color:rgba(49,224,129,.15);}
+.spec-ans-row.match-no{background:rgba(var(--red-rgb),.05);border-color:rgba(var(--red-rgb),.12);}
+.spec-ans-num{font-family:var(--font-mono);font-size:.5rem;color:rgba(255,255,255,.22);text-align:right;}
+.spec-ans-val{padding:2px 5px;border-radius:2px;background:rgba(255,255,255,.04);color:var(--paper2);font-size:clamp(.5rem,.9vw,.65rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5;}
+.spec-ans-val.empty{color:rgba(255,255,255,.14);font-style:italic;}
+.spec-ans-icon{text-align:center;font-size:.6rem;color:var(--muted);}
+.spec-ans-row.match-yes .spec-ans-icon{color:var(--ok);}
+.spec-ans-row.match-no .spec-ans-icon{color:var(--red2);}
+
+/* ── Footer ── */
+.spec-footer{padding:8px clamp(20px,4vw,48px);border-top:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;gap:10px;flex-shrink:0;background:rgba(0,0,0,.2);}
+
+/* ── Résultats ── */
+@keyframes specScorePop{0%{transform:scale(1);}40%{transform:scale(1.15);}100%{transform:scale(1);}}
 .spec-score.pop{animation:specScorePop .35s var(--ease-hud);}
-
-/* Spectateur — réponses en direct */
-.spec-answers{width:100%;margin-top:4px;display:flex;flex-direction:column;gap:3px;max-height:min(220px,28vh);overflow-y:auto;}
-.spec-ans-row{display:grid;grid-template-columns:22px 1fr 18px 1fr;gap:5px;align-items:center;padding:4px 8px;border-radius:4px;background:rgba(255,255,255,.03);transition:background .3s;}
-.spec-ans-row.has-both{background:rgba(255,255,255,.07);}
-.spec-ans-row.match-yes{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.18);}
-.spec-ans-row.match-no{background:rgba(209,25,62,.07);border:1px solid rgba(209,25,62,.14);}
-.spec-ans-num{font-family:var(--font-mono);font-size:clamp(.5rem,.9vw,.62rem);color:var(--muted);text-align:right;}
-.spec-ans-val{padding:2px 6px;border-radius:3px;background:rgba(255,255,255,.05);color:var(--text);font-size:clamp(.55rem,1vw,.72rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:16px;line-height:1.4;}
-.spec-ans-val.empty{color:rgba(255,255,255,.18);font-style:italic;}
-.spec-ans-icon{text-align:center;font-size:clamp(.55rem,1vw,.72rem);}
-
-/* Spectateur — écran résultats */
-#spec-results-overlay{display:none;position:absolute;inset:0;z-index:5;background:var(--black);flex-direction:column;overflow-y:auto;animation:fadeIn .5s ease;}
+#spec-results-overlay{display:none;position:absolute;inset:0;z-index:5;background:rgba(6,7,13,.97);flex-direction:column;overflow-y:auto;animation:fadeIn .6s ease;}
 #spectator-view.spec-results #spec-results-overlay{display:flex;}
-#spectator-view.spec-results .spec-pairs{opacity:.12;pointer-events:none;}
-.spec-res-header{text-align:center;padding:clamp(20px,4vh,48px) 24px clamp(12px,2vh,28px);flex-shrink:0;}
-.spec-res-trophy{font-size:clamp(2.5rem,8vw,5rem);line-height:1;margin-bottom:8px;}
-.spec-res-title{font-family:var(--font-display);font-size:clamp(.6rem,2vw,.9rem);letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
-.spec-res-winner-name{font-family:var(--font-display);font-size:clamp(1.6rem,5vw,3.2rem);font-weight:700;color:var(--paper);line-height:1.1;}
-.spec-res-winner-sub{font-size:clamp(.65rem,1.4vw,.85rem);color:var(--muted);margin-top:6px;}
-.spec-res-scores{display:flex;gap:0;border-top:1px solid rgba(var(--gold-rgb),.12);border-bottom:1px solid rgba(var(--gold-rgb),.12);flex-shrink:0;}
-.spec-res-score-col{flex:1;padding:clamp(16px,3vh,32px) 24px;text-align:center;display:flex;flex-direction:column;gap:8px;position:relative;}
-.spec-res-score-col::after{content:'';position:absolute;right:0;top:10%;bottom:10%;width:1px;background:rgba(var(--gold-rgb),.1);}
+#spectator-view.spec-results .spec-pairs{opacity:.08;pointer-events:none;}
+.spec-res-header{text-align:center;padding:clamp(20px,4vh,52px) 24px clamp(10px,2vh,24px);flex-shrink:0;}
+.spec-res-trophy{font-size:clamp(2.8rem,9vw,5.5rem);line-height:1;margin-bottom:10px;}
+.spec-res-title{font-family:var(--hud-font);font-size:clamp(.55rem,1.4vw,.8rem);letter-spacing:.55em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.spec-res-winner-name{font-family:var(--font-display);font-size:clamp(1.8rem,5.5vw,3.6rem);font-weight:700;color:var(--paper);line-height:1.1;}
+.spec-res-winner-sub{font-size:clamp(.62rem,1.3vw,.82rem);color:var(--muted);margin-top:8px;}
+.spec-res-scores{display:flex;gap:0;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+.spec-res-score-col{flex:1;padding:clamp(16px,3vh,36px) 24px;text-align:center;display:flex;flex-direction:column;gap:8px;position:relative;}
+.spec-res-score-col::after{content:'';position:absolute;right:0;top:10%;bottom:10%;width:1px;background:rgba(255,255,255,.07);}
 .spec-res-score-col:last-child::after{display:none;}
-.spec-res-score-col.winner{background:rgba(var(--gold-rgb),.04);}
-.spec-res-col-num{font-family:var(--hud-font);font-size:clamp(.5rem,1vw,.65rem);letter-spacing:.4em;text-transform:uppercase;color:var(--muted);}
-.spec-res-col-names{font-family:var(--font-display);font-size:clamp(.8rem,2vw,1.2rem);font-weight:700;color:var(--paper);}
-.spec-res-col-score{font-family:var(--font-display);font-size:clamp(2.4rem,7vw,5rem);font-weight:700;line-height:1;}
+.spec-res-score-col.winner{background:rgba(var(--gold-rgb),.03);}
+.spec-res-col-num{font-family:var(--hud-font);font-size:clamp(.48rem,.9vw,.6rem);letter-spacing:.45em;text-transform:uppercase;color:rgba(255,255,255,.22);}
+.spec-res-col-names{font-family:var(--font-display);font-size:clamp(.8rem,2vw,1.25rem);font-weight:700;color:var(--paper);}
+.spec-res-col-score{font-family:var(--font-display);font-size:clamp(2.6rem,7.5vw,5.5rem);font-weight:700;line-height:1;}
 .spec-res-score-col:nth-child(1) .spec-res-col-score{color:var(--gold2);}
 .spec-res-score-col:nth-child(2) .spec-res-col-score{color:var(--red2);}
-.spec-res-col-badge{display:inline-block;font-family:var(--hud-font);font-size:.55rem;letter-spacing:.15em;padding:3px 10px;border-radius:20px;text-transform:uppercase;}
-.spec-res-col-badge.win{background:rgba(var(--gold-rgb),.18);color:var(--gold);border:1px solid rgba(var(--gold-rgb),.3);}
-.spec-res-col-badge.lose{background:rgba(255,255,255,.04);color:var(--muted);border:1px solid rgba(255,255,255,.08);}
-.spec-res-col-badge.tie{background:rgba(100,180,255,.1);color:#7bc8ff;border:1px solid rgba(100,180,255,.2);}
+.spec-res-col-badge{display:inline-block;font-family:var(--hud-font);font-size:.52rem;letter-spacing:.14em;padding:3px 10px;border-radius:20px;text-transform:uppercase;}
+.spec-res-col-badge.win{background:rgba(var(--gold-rgb),.15);color:var(--gold);border:1px solid rgba(var(--gold-rgb),.28);}
+.spec-res-col-badge.lose{background:rgba(255,255,255,.03);color:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.07);}
+.spec-res-col-badge.tie{background:rgba(100,180,255,.08);color:#7bc8ff;border:1px solid rgba(100,180,255,.18);}
 .spec-res-detail{flex:1;display:flex;overflow:hidden;}
-.spec-res-detail-col{flex:1;padding:clamp(12px,2.5vh,24px);display:flex;flex-direction:column;gap:6px;overflow-y:auto;border-right:1px solid rgba(var(--gold-rgb),.08);}
+.spec-res-detail-col{flex:1;padding:clamp(10px,2vh,22px);display:flex;flex-direction:column;gap:5px;overflow-y:auto;border-right:1px solid rgba(255,255,255,.05);}
 .spec-res-detail-col:last-child{border-right:none;}
-.spec-res-detail-title{font-family:var(--hud-font);font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;flex-shrink:0;}
+.spec-res-detail-title{font-family:var(--hud-font);font-size:.55rem;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:4px;flex-shrink:0;}
 
-/* ══ SPECTATEUR — Intro cinématique ══ */
-#spec-intro{position:absolute;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;pointer-events:none;animation:siIntroExit .7s 5s ease-in forwards;}
-@keyframes siIntroExit{to{opacity:0;visibility:hidden;}}
+/* ══ CINÉMATIQUE D'INTRO ══ */
+#spec-intro{
+  position:absolute;inset:0;z-index:200;background:#000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;pointer-events:none;
+  transition:opacity .5s ease-in;
+}
+#spec-intro.si-exiting{opacity:0;}
 
-/* Scan line CRT */
-.si-scan{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 44%,rgba(209,25,62,.18) 50%,transparent 56%);transform:translateY(-110%);animation:siScan .55s .05s ease-in-out forwards;}
-@keyframes siScan{to{transform:translateY(210%);}}
+/* Texture CRT */
+.si-crt{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0px,rgba(0,0,0,.16) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:1;}
+/* Vignette */
+.si-vignette{position:absolute;inset:0;background:radial-gradient(ellipse 85% 85% at 50% 50%,transparent 50%,rgba(0,0,0,.75) 100%);z-index:1;pointer-events:none;}
+/* Scan rouge */
+.si-scan{position:absolute;left:0;right:0;height:3px;background:rgba(209,25,62,.7);box-shadow:0 0 18px 6px rgba(209,25,62,.35);top:-4px;animation:siScan .55s .04s cubic-bezier(.4,0,.6,1) forwards;z-index:2;}
+@keyframes siScan{to{top:100%;}}
 
-/* Lignes de scan permanentes (texture CRT) */
-.si-crt{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.12) 0px,rgba(0,0,0,.12) 1px,transparent 1px,transparent 3px);pointer-events:none;}
-
-/* Badge EN DIRECT */
-.si-live{position:absolute;top:clamp(18px,3vh,32px);left:clamp(20px,3vw,36px);display:flex;align-items:center;gap:8px;opacity:0;animation:siFadeIn .35s .55s forwards;}
-.si-live-dot{width:7px;height:7px;border-radius:50%;background:#D1193E;animation:siPulse 1s .55s steps(1) infinite;}
+/* Barre supérieure */
+.si-top-bar{position:absolute;top:0;left:0;right:0;height:clamp(42px,6vh,58px);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(22px,3vw,40px);z-index:3;border-bottom:1px solid rgba(255,255,255,.04);opacity:0;animation:siFadeIn .3s .38s forwards;}
+.si-live{display:flex;align-items:center;gap:7px;}
+.si-live-dot{width:6px;height:6px;border-radius:50%;background:#D1193E;animation:siPulse 1s .4s steps(1) infinite;flex-shrink:0;}
 @keyframes siPulse{0%,100%{opacity:1;}50%{opacity:0;}}
-.si-live-txt{font-family:var(--font-mono,'Courier New',monospace);font-size:clamp(.5rem,.9vw,.62rem);letter-spacing:.35em;color:#D1193E;text-transform:uppercase;}
+.si-live-txt{font-family:var(--font-mono,'Courier New',monospace);font-size:clamp(.44rem,.75vw,.58rem);letter-spacing:.38em;color:#D1193E;text-transform:uppercase;}
+.si-ts{font-family:var(--font-mono,'Courier New',monospace);font-size:clamp(.44rem,.75vw,.58rem);letter-spacing:.2em;color:rgba(255,255,255,.22);}
 
-/* Timestamp en haut à droite */
-.si-ts{position:absolute;top:clamp(18px,3vh,32px);right:clamp(20px,3vw,36px);font-family:var(--font-mono,'Courier New',monospace);font-size:clamp(.5rem,.9vw,.62rem);letter-spacing:.2em;color:rgba(255,255,255,.25);opacity:0;animation:siFadeIn .35s .6s forwards;}
-
-/* Logo central ALIBI */
-.si-logo{font-family:var(--font-display,'Georgia',serif);font-size:clamp(2.2rem,8vw,5.5rem);font-weight:700;color:#D1193E;letter-spacing:.55em;text-indent:.55em;opacity:0;animation:siLogo .4s .5s cubic-bezier(.2,0,.05,1) forwards;text-shadow:0 0 60px rgba(209,25,62,.5);}
-@keyframes siLogo{0%{opacity:0;filter:brightness(4) blur(3px);transform:scale(1.06);}55%{opacity:1;filter:brightness(1.8) blur(0);}100%{opacity:1;filter:brightness(1);transform:scale(1);}}
-
-/* Séparateur */
-.si-sep{height:1px;width:0;background:linear-gradient(90deg,transparent,rgba(209,25,62,.6),transparent);margin:clamp(10px,2vh,20px) 0 clamp(8px,1.5vh,16px);animation:siLine .45s 1.05s ease-out forwards;}
-@keyframes siLine{to{width:min(280px,48vw);}}
-
-/* Titre MODE SPECTATEUR */
-.si-mode{font-family:var(--font-mono,'Courier New',monospace);font-size:clamp(.55rem,1.4vw,.78rem);letter-spacing:.55em;text-indent:.55em;text-transform:uppercase;color:rgba(255,255,255,.55);opacity:0;animation:siFadeUp .35s .9s forwards;}
-
-/* Question */
-.si-question{font-family:var(--font-display,'Georgia',serif);font-size:clamp(1.1rem,3.8vw,2.4rem);font-weight:700;color:#C8922A;letter-spacing:.08em;opacity:0;margin-top:clamp(6px,1.5vh,14px);animation:siFadeUp .4s 1.25s forwards;}
-@keyframes siFadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+/* Centre */
+.si-center{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;}
+.si-logo{font-family:var(--font-display,'Georgia',serif);font-size:clamp(2.6rem,9vw,6.5rem);font-weight:700;color:#D1193E;letter-spacing:.58em;text-indent:.58em;opacity:0;animation:siLogo .45s .62s cubic-bezier(.15,0,.05,1) forwards;text-shadow:0 0 80px rgba(209,25,62,.6);}
+@keyframes siLogo{0%{opacity:0;filter:brightness(8) blur(5px);transform:scale(1.1);}55%{opacity:1;filter:brightness(2.5) blur(0);}100%{opacity:1;filter:brightness(1);transform:scale(1);}}
+.si-sep{height:1px;width:0;background:linear-gradient(90deg,transparent,rgba(209,25,62,.5),transparent);margin:clamp(14px,2.5vh,26px) 0 clamp(12px,2vh,20px);animation:siLine .4s 1.08s ease-out forwards;}
+@keyframes siLine{to{width:min(260px,42vw);}}
+.si-mode{font-family:var(--font-mono,'Courier New',monospace);font-size:clamp(.52rem,1.2vw,.72rem);letter-spacing:.58em;text-indent:.58em;text-transform:uppercase;color:rgba(255,255,255,.45);opacity:0;animation:siFadeUp .32s 1.32s forwards;}
+@keyframes siFadeUp{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:translateY(0);}}
 
 /* Barre de chargement */
-.si-bar-wrap{width:min(200px,32vw);height:2px;background:rgba(255,255,255,.1);border-radius:1px;margin-top:clamp(20px,3.5vh,36px);overflow:hidden;opacity:0;animation:siFadeIn .3s 1.7s forwards;}
-.si-bar{height:100%;width:0;background:linear-gradient(90deg,#D1193E,#C8922A);border-radius:1px;animation:siBar 2.8s 1.75s cubic-bezier(.25,0,.2,1) forwards;}
+.si-status-wrap{display:flex;flex-direction:column;align-items:center;gap:9px;margin-top:clamp(24px,4.5vh,44px);opacity:0;animation:siFadeIn .3s 1.62s forwards;}
+.si-bar-wrap{width:min(170px,26vw);height:1px;background:rgba(255,255,255,.1);border-radius:1px;overflow:hidden;}
+.si-bar{height:100%;width:0;background:linear-gradient(90deg,#D1193E,#C8922A);animation:siBar 1.38s 1.68s cubic-bezier(.22,0,.12,1) forwards;}
 @keyframes siBar{to{width:100%;}}
-
-/* Label sous la barre */
-.si-loading{font-family:var(--font-mono,'Courier New',monospace);font-size:clamp(.45rem,.8vw,.58rem);letter-spacing:.3em;color:rgba(255,255,255,.2);margin-top:10px;opacity:0;animation:siFadeIn .3s 1.75s forwards;}
+.si-loading{font-family:var(--font-mono,'Courier New',monospace);font-size:clamp(.4rem,.7vw,.52rem);letter-spacing:.3em;color:rgba(255,255,255,.22);transition:color .3s;}
+.si-loading.ok{color:rgba(49,224,129,.55);}
 
 @keyframes siFadeIn{to{opacity:1;}}
 
@@ -2115,6 +2149,64 @@ body.in-lobby #btn-voice{display:none!important;}
   .prep-timer{font-size:2.2rem;}
   .topbar-line{margin-top:5px;}
 }
+
+/* ══ PARAMÈTRES ══ */
+#settings-overlay{display:none;position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.78);backdrop-filter:blur(7px);align-items:center;justify-content:center;}
+#settings-overlay.active{display:flex;}
+#settings-panel{background:#0c0c14;border:1px solid rgba(var(--gold-rgb),.25);border-radius:10px;width:min(680px,96vw);max-height:88vh;box-shadow:0 12px 60px rgba(0,0,0,.8);display:flex;flex-direction:column;overflow:hidden;}
+#settings-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 14px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+#settings-header span{font-family:var(--hud-font);font-size:.95rem;letter-spacing:.12em;color:var(--gold);}
+#settings-header button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;padding:4px;}
+#settings-header button:hover{color:var(--paper);}
+#settings-inner{display:flex;flex:1;min-height:0;}
+#settings-nav{width:160px;flex-shrink:0;border-right:1px solid rgba(255,255,255,.06);padding:10px 0;display:flex;flex-direction:column;gap:2px;overflow-y:auto;}
+.set-nav-item{padding:10px 16px;cursor:pointer;font-size:.82rem;color:var(--muted);border-left:2px solid transparent;transition:all .15s;white-space:nowrap;}
+.set-nav-item:hover{color:var(--paper);background:rgba(255,255,255,.04);}
+.set-nav-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(var(--gold-rgb),.06);}
+#settings-content{flex:1;overflow-y:auto;padding:20px 22px;}
+.set-pane{display:none;flex-direction:column;gap:18px;}
+.set-pane.active{display:flex;}
+.set-label{font-family:var(--hud-font);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px;}
+.set-coming{font-size:.82rem;color:var(--muted);font-style:italic;}
+.set-select{width:100%;background:#161620;border:1px solid rgba(255,255,255,.12);border-radius:5px;color:var(--paper);padding:8px 10px;font-size:.86rem;cursor:pointer;outline:none;}
+.set-select:focus{border-color:rgba(var(--gold-rgb),.5);}
+.set-select option{background:#161620;}
+.set-vol-row{display:flex;align-items:center;gap:12px;}
+.set-vol-row label{font-size:.82rem;color:var(--muted);min-width:90px;flex-shrink:0;}
+.set-vol-row input[type=range]{flex:1;accent-color:var(--gold);height:4px;cursor:pointer;}
+.set-vol-val{font-size:.78rem;color:var(--paper2);min-width:36px;text-align:right;font-family:var(--hud-font);}
+.set-lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.set-lang-btn{background:#161620;border:1px solid rgba(255,255,255,.1);border-radius:5px;padding:10px;color:var(--muted);cursor:not-allowed;font-size:.84rem;text-align:center;opacity:.45;}
+.set-lang-btn.active{border-color:rgba(var(--gold-rgb),.5);color:var(--gold);opacity:1;cursor:default;}
+.set-textsize-row{display:flex;gap:8px;}
+.set-textsize-btn{flex:1;padding:10px 6px;background:#161620;border:1px solid rgba(255,255,255,.1);border-radius:5px;color:var(--muted);cursor:pointer;font-size:.84rem;text-align:center;transition:all .15s;}
+.set-textsize-btn:hover{border-color:rgba(255,255,255,.25);color:var(--paper);}
+.set-textsize-btn.active{border-color:rgba(var(--gold-rgb),.5);color:var(--gold);background:rgba(var(--gold-rgb),.07);}
+.set-mic-test-btn{width:100%;padding:10px;background:#161620;border:1px solid rgba(255,255,255,.12);border-radius:5px;color:var(--paper);cursor:pointer;font-size:.86rem;transition:all .2s;}
+.set-mic-test-btn:hover{border-color:rgba(var(--gold-rgb),.4);}
+.set-mic-test-btn.active{border-color:#4ade80;color:#4ade80;background:rgba(74,222,128,.08);}
+.set-shortcut-row{display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.set-shortcut-row:last-child{border-bottom:none;}
+.set-shortcut-row span{font-size:.83rem;color:var(--muted);}
+kbd{display:inline-flex;align-items:center;justify-content:center;background:#1e1e2a;border:1px solid rgba(255,255,255,.2);border-bottom:2px solid rgba(255,255,255,.1);border-radius:4px;padding:2px 7px;font-size:.75rem;font-family:var(--hud-font);color:var(--paper2);white-space:nowrap;}
+/* ══ MODE DALTONIEN ══ */
+html.colorblind{--red:#E07820;--red2:#FF9030;--red-dim:#3A1800;--red-rgb:224,120,32;--ok:#2B8FEF;}
+/* ══ PEAUX DE CARTES ══ */
+html[data-card-skin="cuir"] .card{background:radial-gradient(circle 300px at var(--mx,50%) var(--my,50%),rgba(255,255,255,.035),transparent 62%),linear-gradient(135deg,var(--tint,transparent) 0%,transparent 52%),rgba(42,18,6,.88);border-color:rgba(140,65,22,.35);}
+html[data-card-skin="marbre"] .card{background:radial-gradient(circle 300px at var(--mx,50%) var(--my,50%),rgba(255,255,255,.04),transparent 62%),linear-gradient(135deg,var(--tint,transparent) 0%,transparent 52%),linear-gradient(118deg,rgba(18,18,26,.95) 0%,rgba(30,26,42,.9) 35%,rgba(20,18,30,.95) 65%,rgba(28,24,40,.9) 100%);}
+html[data-card-skin="ardoise"] .card{background:radial-gradient(circle 300px at var(--mx,50%) var(--my,50%),rgba(255,255,255,.03),transparent 62%),linear-gradient(135deg,var(--tint,transparent) 0%,transparent 52%),rgba(8,14,28,.92);border-color:rgba(40,70,130,.3);}
+html[data-card-skin="bois"] .card{background:radial-gradient(circle 300px at var(--mx,50%) var(--my,50%),rgba(255,255,255,.03),transparent 62%),linear-gradient(135deg,var(--tint,transparent) 0%,transparent 52%),repeating-linear-gradient(165deg,rgba(255,220,120,.015) 0px,rgba(255,220,120,.015) 1px,transparent 1px,transparent 20px),rgba(20,9,2,.9);border-color:rgba(100,48,12,.35);}
+/* ══ SETTINGS — toggles et skins ══ */
+.set-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;padding:4px 0;}
+.set-toggle-label{font-size:.84rem;color:var(--paper2);line-height:1.4;}
+.set-toggle-track{position:relative;width:42px;height:24px;background:#1e1e2a;border:1px solid rgba(255,255,255,.15);border-radius:12px;transition:background .2s,border-color .2s;flex-shrink:0;}
+.set-toggle-track.on{background:rgba(var(--gold-rgb),.22);border-color:rgba(var(--gold-rgb),.5);}
+.set-toggle-track::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--muted);transition:transform .2s,background .2s;}
+.set-toggle-track.on::after{transform:translateX(18px);background:var(--gold);}
+.set-skin-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.set-skin-btn{height:52px;border-radius:6px;border:2px solid rgba(255,255,255,.1);cursor:pointer;transition:border-color .15s,transform .15s;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px;font-size:.62rem;color:rgba(255,255,255,.55);font-family:var(--hud-font);letter-spacing:.04em;text-transform:uppercase;}
+.set-skin-btn:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.3);color:var(--paper2);}
+.set-skin-btn.active{border-color:var(--gold);color:var(--gold);}
 </style>
 </head>
 <body>
@@ -2258,6 +2350,7 @@ body.in-lobby #btn-voice{display:none!important;}
         <div class="lobby-ready-tag">✔ Prêt</div>
       </div>
       <div class="lobby-player" id="lobby-player-guest">
+        <button class="lobby-kick-btn" id="lobby-kick-btn" onclick="lobbyKickGuest()" title="Expulser l'invité">✕ Kick</button>
         <span class="lobby-player-role lrole-guest" id="lobby-role-guest">👤 Inspecteur B — Invité</span>
         <div class="lobby-avatar lavatar-guest lobby-waiting-anim" id="lobby-avatar-guest" style="font-size:1.3rem;color:var(--wire);">?</div>
         <div class="lobby-player-name waiting" id="lobby-name-guest">En attente...</div>
@@ -2283,6 +2376,11 @@ body.in-lobby #btn-voice{display:none!important;}
   <div class="rr-title">R&#x00C9;SULTATS !</div>
   <div class="rr-sub" id="rr-sub">Les deux inspecteurs ont termin&#x00E9;</div>
   <button class="btn btn-gold" style="font-size:1.1rem;height:52px;padding:0 40px;margin-top:8px" onclick="_onlineClickResults()">&#x1F3C1; Voir les r&#x00E9;sultats</button>
+</div>
+<div id="reconnect-banner">
+  <div class="reconnect-text">🔄 Partie en cours détectée — <span class="reconnect-code" id="reconnect-code">—</span><br><span style="font-size:.74rem;color:var(--muted)" id="reconnect-role">Reprendre votre session ?</span></div>
+  <button class="reconnect-btn" onclick="reconnectAttempt()">Reprendre</button>
+  <button class="reconnect-dismiss" onclick="reconnectDismiss()" title="Ignorer">✕</button>
 </div>
 <div class="signature">Made by <span>Adrien Lazare</span></div>
 <button id="music-btn" title="Musique d'ambiance" aria-label="Activer ou couper la musique d'ambiance">🎵</button>
@@ -2509,7 +2607,7 @@ body.in-lobby #btn-voice{display:none!important;}
       <button class="mm-btn" onclick="mmOpenCharacters()">🕵️ Personnages</button>
       <button class="mm-btn" onclick="mmOpenProgress()">🏆 Progression</button>
       <button class="mm-btn" onclick="showHelp()">📖 Règles du jeu</button>
-      <button class="mm-btn" onclick="mmStartTour()">🗺️ Visite guidée</button>
+      <button class="mm-btn" onclick="settingsOpen()">⚙️ Paramètres</button>
     </div>
   </div>
 </div>
@@ -2819,6 +2917,7 @@ body.in-lobby #btn-voice{display:none!important;}
               <button class="btn btn-gold btn-signal-ripple" id="btn-online-create" onclick="signalFire(this);onlineCreateRoom();" type="button">➕ Créer</button>
               <button class="btn btn-red btn-signal-ripple" id="btn-online-join" onclick="signalFire(this);onlineJoinRoom();" type="button">🔗 Rejoindre</button>
               <button class="btn btn-ghost" onclick="onlineCopyRoom()" type="button">📋 Copier code</button>
+              <button class="btn btn-ghost" onclick="joinAsSpectator()" type="button" title="Observer une partie en cours sans jouer" style="border-color:rgba(var(--gold-rgb),.35);color:var(--muted);">👁️ Spectateur</button>
             </div>
             <div class="row" style="gap:12px;align-items:flex-start;margin-top:12px;flex-wrap:wrap">
               <div style="flex:1;min-width:220px">
@@ -4796,8 +4895,10 @@ function lobbyDisconnect() {
   lobbyHide();
   _onlineCleanupRoom();
   online.enabled = false; online.isHost = false; online.roomId = null;
+  _hasRegistered = false;
   chatStop();voiceLeave();onlineSetStatus('Hors ligne', false);
   var el = document.getElementById('online-room-code'); if (el) el.textContent = '—';
+  _sessionClear();
   toast('Déconnecté', 'warn');
 }
 function lobbyLaunch() {
@@ -4820,6 +4921,9 @@ function lobbyUpdateGuest(name, connected, ready) {
   var readyWrap = document.getElementById('lobby-guest-ready-wrap');
   var launchBtn = document.getElementById('lobby-launch-btn');
   var hintEl = document.getElementById('lobby-hint');
+
+  var kickBtn = document.getElementById('lobby-kick-btn');
+  if (kickBtn) kickBtn.style.display = (online.isHost && connected) ? 'inline-block' : 'none';
 
   if (connected) {
     if (avatar) { avatar.textContent = '👮'; avatar.className = 'lobby-avatar lavatar-guest connected'; }
@@ -4858,6 +4962,19 @@ function lobbyGuestSetReady() {
   var hintEl = document.getElementById('lobby-hint');
   if (hintEl) hintEl.textContent = 'En attente que l\'hôte lance la manche…';
 }
+function lobbyKickGuest() {
+  if (!online.isHost || !online.db || !online.roomId) return;
+  online.db.ref('rooms/'+online.roomId+'/participants').once('value').then(function(snap){
+    var parts = snap.val() || {};
+    var guestKey = Object.keys(parts).find(function(k){ return !parts[k].host; });
+    if (!guestKey) { toast('Aucun invité à expulser', 'warn'); return; }
+    online.db.ref('rooms/'+online.roomId+'/participants/'+guestKey).remove();
+    online.db.ref('rooms/'+online.roomId+'/lobbyReady').remove();
+    online.db.ref('rooms/'+online.roomId+'/kicked').set({ts:Date.now()});
+    lobbyGuestReady = false;
+    toast('Invité expulsé', 'warn');
+  });
+}
 function lobbyRenderFromParticipants(participants, lobbyReady) {
   var arr = Object.keys(participants || {}).map(function(k) { return participants[k]; });
   var guest = arr.find(function(p) { return !p.host; });
@@ -4877,6 +4994,7 @@ function onlineCreateRoom(){
     onlineRegisterParticipant();onlineListenRoom();chatListen();preuveListen();onlineSetRoomCode(online.roomId);onlineSetStatus('\uD83D\uDC51 H\u00f4te (Insp. A)',true);
     lobbySetCode(online.roomId);lobbySetHostName(online.playerName);lobbyUpdateGuest(null,false,false);
     lobbyShow();
+    _sessionSave();
     toast('\uD83C\uDF10 Partie cr\u00e9\u00e9e ! Partage le code.','ok');
   })
   .catch(function(e){toast('Erreur cr\u00e9ation : '+e.message,'danger');});
@@ -4894,13 +5012,71 @@ function onlineJoinRoom(){
     toast('\uD83D\uDD17 Rejoint ! En attente du lancement…','ok');
   }).catch(function(e){toast('Connexion impossible : '+e.message,'danger');});
 }
+var _hasRegistered = false;
 function onlineRegisterParticipant(){
   if(!online.enabled||!online.db)return;
   var pRef=online.db.ref('rooms/'+online.roomId+'/participants/'+online.playerId);
   pRef.set({name:online.playerName,joinedAt:firebase.database.ServerValue.TIMESTAMP,host:online.isHost});
   pRef.onDisconnect().remove();
+  _hasRegistered = true;
 }
 function onlineCopyRoom(){if(!online.roomId){toast('Aucun code','warn');return;}navigator.clipboard.writeText(online.roomId).then(function(){toast('Code copié ✔','ok');});}
+
+/* ── Session persistante (reconnexion) ── */
+var _SESSION_KEY = 'alibi_session_v4';
+function _sessionSave(){
+  try{
+    localStorage.setItem(_SESSION_KEY, JSON.stringify({
+      roomId: online.roomId,
+      playerName: online.playerName,
+      playerId: online.playerId,
+      isHost: online.isHost,
+      savedAt: Date.now()
+    }));
+  }catch(e){}
+}
+function _sessionClear(){
+  try{ localStorage.removeItem(_SESSION_KEY); }catch(e){}
+}
+function _sessionLoad(){
+  try{
+    var raw = localStorage.getItem(_SESSION_KEY);
+    if(!raw) return null;
+    var s = JSON.parse(raw);
+    if(!s || !s.roomId || (Date.now() - (s.savedAt||0)) > 3600000) { _sessionClear(); return null; }
+    return s;
+  }catch(e){ return null; }
+}
+function reconnectAttempt(){
+  var s = _sessionLoad();
+  if(!s){ reconnectDismiss(); return; }
+  document.getElementById('reconnect-banner').classList.remove('show');
+  if(!onlineInitFirebase()){ toast('Impossible d\'initialiser Firebase','danger'); return; }
+  toast('🔄 Reconnexion en cours…','ok');
+  online.db.ref('rooms/'+s.roomId).once('value').then(function(snap){
+    if(!snap.exists()){ toast('La partie a expiré','warn'); _sessionClear(); return; }
+    online.playerName = s.playerName;
+    online.playerId   = s.playerId;
+    online.roomId     = s.roomId;
+    online.isHost     = s.isHost;
+    online.enabled    = true;
+    onlineRegisterParticipant();
+    onlineListenRoom();
+    chatListen();
+    preuveListen();
+    onlineSetRoomCode(s.roomId);
+    onlineSetStatus(s.isHost ? '👑 Hôte (Insp. A)' : '👤 Invité (Insp. B)', true);
+    lobbySetCode(s.roomId);
+    if(s.isHost) lobbySetHostName(s.playerName);
+    else         lobbyUpdateGuest(s.playerName, true, false);
+    lobbyShow();
+    toast('✔ Reconnecté !','ok');
+  }).catch(function(){ toast('Reconnexion impossible','danger'); _sessionClear(); });
+}
+function reconnectDismiss(){
+  _sessionClear();
+  document.getElementById('reconnect-banner').classList.remove('show');
+}
 
 /* ── Listener principal ── */
 function onlineListenRoom(){
@@ -4908,6 +5084,17 @@ function onlineListenRoom(){
   online.db.ref('rooms/'+online.roomId).off();
   online.db.ref('rooms/'+online.roomId).on('value',function(snap){
     var data=snap.val();if(!data)return;
+    /* Détection expulsion (guest uniquement) */
+    if(!online.isHost && _hasRegistered && online.playerId){
+      var parts = data.participants||{};
+      if(Object.keys(parts).length > 0 && !parts[online.playerId]){
+        toast('⛔ Vous avez été expulsé de la partie','danger');
+        online.db.ref('rooms/'+online.roomId).off();
+        online.enabled=false; online.isHost=false; online.roomId=null; _hasRegistered=false;
+        chatStop(); voiceLeave(); onlineSetStatus('Hors ligne',false);
+        lobbyHide(); _sessionClear(); return;
+      }
+    }
     onlineRenderParticipants(data.participants||{});
     /* Mettre à jour le lobby */
     lobbyRenderFromParticipants(data.participants||{}, data.lobbyReady||null);
@@ -6416,8 +6603,8 @@ var ACCESSORIES = [
 
 /* État des avatars */
 var avatarState = {
-  a: { hat:'fedora', jacket:'suit-black', skin:'s2', acc:'glasses' },
-  b: { hat:'cap',    jacket:'suit-navy',  skin:'s3', acc:'none'    },
+  a: { hat:'fedora', jacket:'suit-black', skin:'s2', acc:'glasses', gender:'male' },
+  b: { hat:'cap',    jacket:'suit-navy',  skin:'s3', acc:'none',    gender:'male' },
 };
 
 /* ── Dessin SVG de l'avatar ── */
@@ -6428,8 +6615,17 @@ function drawAvatar(id) {
   var jk    = JACKETS.find(function(j){ return j.id === state.jacket; });
   var jcol  = jk ? jk.color : '#1a1a1a';
   var jhi   = lighten(jcol, 30);
+  var isFemale = state.gender === 'female';
+  var hairCol  = darken(skin, 40);
 
   var html = '';
+
+  /* Cheveux arrière (femme — doit être dessiné avant le corps) */
+  if (isFemale) {
+    html += '<rect x="36" y="18" width="48" height="112" rx="24" fill="' + hairCol + '"/>';
+    html += '<ellipse cx="34" cy="82" rx="10" ry="44" fill="' + hairCol + '"/>';
+    html += '<ellipse cx="86" cy="82" rx="10" ry="44" fill="' + hairCol + '"/>';
+  }
 
   /* Corps / costume */
   if (state.jacket === 'suit-stripe') {
@@ -6530,30 +6726,84 @@ function drawAvatar(id) {
   /* Mains */
   html += '<ellipse cx="23" cy="126" rx="9" ry="8" fill="' + skin + '"/>';
   html += '<ellipse cx="97" cy="126" rx="9" ry="8" fill="' + skin + '"/>';
-  /* Cou */
-  html += '<rect x="50" y="56" width="20" height="20" rx="4" fill="' + skin + '"/>';
-  /* Tête */
-  html += '<ellipse cx="60" cy="44" rx="26" ry="28" fill="' + skin + '"/>';
-  /* Cheveux */
-  html += '<ellipse cx="60" cy="20" rx="26" ry="10" fill="' + darken(skin, 40) + '"/>';
-  /* Yeux */
-  html += '<ellipse cx="50" cy="42" rx="4" ry="4.5" fill="white"/>';
-  html += '<ellipse cx="70" cy="42" rx="4" ry="4.5" fill="white"/>';
-  html += '<ellipse cx="51" cy="43" rx="2.5" ry="3" fill="#222"/>';
-  html += '<ellipse cx="71" cy="43" rx="2.5" ry="3" fill="#222"/>';
-  /* Reflets yeux */
-  html += '<ellipse cx="52" cy="42" rx="1" ry="1" fill="white"/>';
-  html += '<ellipse cx="72" cy="42" rx="1" ry="1" fill="white"/>';
-  /* Sourcils */
-  html += '<path d="M46 37 Q50 35 54 37" stroke="' + darken(skin,50) + '" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
-  html += '<path d="M66 37 Q70 35 74 37" stroke="' + darken(skin,50) + '" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
-  /* Nez */
-  html += '<ellipse cx="60" cy="50" rx="3" ry="2" fill="' + darken(skin,15) + '"/>';
-  /* Bouche */
-  html += '<path d="M53 57 Q60 62 67 57" stroke="' + darken(skin,30) + '" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
-  /* Oreilles */
-  html += '<ellipse cx="34" cy="44" rx="5" ry="7" fill="' + skin + '"/>';
-  html += '<ellipse cx="86" cy="44" rx="5" ry="7" fill="' + skin + '"/>';
+
+  if (isFemale) {
+    /* ══ TÊTE FÉMININE ══ */
+    /* Cou (plus fin) */
+    html += '<rect x="52" y="57" width="16" height="19" rx="4" fill="' + skin + '"/>';
+    /* Tête (ovale, légèrement plus étroite) */
+    html += '<ellipse cx="60" cy="45" rx="23" ry="27" fill="' + skin + '"/>';
+    /* Cheveux dessus — bonnet avec volume */
+    html += '<path d="M37 36 C36 20 42 9 60 8 C78 9 84 20 83 36 Q80 22 60 20 Q40 22 37 36 Z" fill="' + hairCol + '"/>';
+    /* Yeux — grands, expressifs */
+    html += '<ellipse cx="49" cy="43" rx="5.5" ry="6" fill="white"/>';
+    html += '<ellipse cx="71" cy="43" rx="5.5" ry="6" fill="white"/>';
+    html += '<ellipse cx="50" cy="44" rx="4" ry="4.5" fill="#333"/>';
+    html += '<ellipse cx="72" cy="44" rx="4" ry="4.5" fill="#333"/>';
+    html += '<ellipse cx="49" cy="42" rx="2.2" ry="2.2" fill="#556"/>';
+    html += '<ellipse cx="71" cy="42" rx="2.2" ry="2.2" fill="#556"/>';
+    html += '<ellipse cx="51" cy="42" rx="1.3" ry="1.3" fill="white"/>';
+    html += '<ellipse cx="73" cy="42" rx="1.3" ry="1.3" fill="white"/>';
+    /* Ligne de paupière et cils */
+    html += '<path d="M44 41 Q49 38 54 41" stroke="#111" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+    html += '<path d="M66 41 Q71 38 76 41" stroke="#111" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+    html += '<line x1="44" y1="41" x2="42" y2="39" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="47" y1="39" x2="46" y2="37" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="50" y1="38" x2="50" y2="36" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="53" y1="39" x2="54" y2="37" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="54" y1="41" x2="56" y2="39" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="66" y1="41" x2="64" y2="39" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="69" y1="39" x2="68" y2="37" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="72" y1="38" x2="72" y2="36" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="75" y1="39" x2="76" y2="37" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="76" y1="41" x2="78" y2="39" stroke="#111" stroke-width="1.2"/>';
+    /* Sourcils — fins et très arqués */
+    html += '<path d="M44 35 Q49 31 55 34" stroke="' + darken(skin,55) + '" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
+    html += '<path d="M65 34 Q71 31 76 35" stroke="' + darken(skin,55) + '" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
+    /* Fards à joues */
+    html += '<ellipse cx="43" cy="51" rx="8" ry="4" fill="rgba(215,100,110,.18)"/>';
+    html += '<ellipse cx="77" cy="51" rx="8" ry="4" fill="rgba(215,100,110,.18)"/>';
+    /* Nez (délicat) */
+    html += '<path d="M57 49 Q60 53 63 49" stroke="' + darken(skin,20) + '" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
+    /* Lèvres colorées */
+    html += '<path d="M53 58 Q56 56 60 57 Q64 56 67 58 Q63 62 60 63 Q57 62 53 58 Z" fill="#c85070"/>';
+    html += '<path d="M53 58 L67 58" stroke="' + darken(skin,15) + '" stroke-width="0.6" opacity="0.7"/>';
+    html += '<path d="M56 57 Q60 55.5 64 57" stroke="rgba(255,255,255,.25)" stroke-width="0.8" fill="none"/>';
+    /* Oreilles (plus petites, près de la tête) */
+    html += '<ellipse cx="37" cy="45" rx="4" ry="6" fill="' + skin + '"/>';
+    html += '<ellipse cx="83" cy="45" rx="4" ry="6" fill="' + skin + '"/>';
+    /* Mèches latérales */
+    html += '<ellipse cx="36" cy="62" rx="7" ry="24" fill="' + hairCol + '"/>';
+    html += '<ellipse cx="84" cy="62" rx="7" ry="24" fill="' + hairCol + '"/>';
+
+  } else {
+    /* ══ TÊTE MASCULINE ══ */
+    /* Cou */
+    html += '<rect x="50" y="56" width="20" height="20" rx="4" fill="' + skin + '"/>';
+    /* Tête */
+    html += '<ellipse cx="60" cy="44" rx="26" ry="28" fill="' + skin + '"/>';
+    /* Cheveux */
+    html += '<ellipse cx="60" cy="20" rx="26" ry="10" fill="' + hairCol + '"/>';
+    /* Yeux */
+    html += '<ellipse cx="50" cy="42" rx="4" ry="4.5" fill="white"/>';
+    html += '<ellipse cx="70" cy="42" rx="4" ry="4.5" fill="white"/>';
+    html += '<ellipse cx="51" cy="43" rx="2.5" ry="3" fill="#222"/>';
+    html += '<ellipse cx="71" cy="43" rx="2.5" ry="3" fill="#222"/>';
+    /* Reflets yeux */
+    html += '<ellipse cx="52" cy="42" rx="1" ry="1" fill="white"/>';
+    html += '<ellipse cx="72" cy="42" rx="1" ry="1" fill="white"/>';
+    /* Sourcils */
+    html += '<path d="M46 37 Q50 35 54 37" stroke="' + darken(skin,50) + '" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
+    html += '<path d="M66 37 Q70 35 74 37" stroke="' + darken(skin,50) + '" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
+    /* Nez */
+    html += '<ellipse cx="60" cy="50" rx="3" ry="2" fill="' + darken(skin,15) + '"/>';
+    /* Bouche */
+    html += '<path d="M53 57 Q60 62 67 57" stroke="' + darken(skin,30) + '" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
+    /* Oreilles */
+    html += '<ellipse cx="34" cy="44" rx="5" ry="7" fill="' + skin + '"/>';
+    html += '<ellipse cx="86" cy="44" rx="5" ry="7" fill="' + skin + '"/>';
+  }
+
   /* Jambes */
   html += '<rect x="34" y="136" width="20" height="14" rx="4" fill="' + darken(jcol,10) + '"/>';
   html += '<rect x="66" y="136" width="20" height="14" rx="4" fill="' + darken(jcol,10) + '"/>';
@@ -7669,15 +7919,24 @@ var AV_ACCESSORIES = [
   { id:'earring',   label:'💍', title:'Boucle d\'oreille' },
 ];
 
-var avatarStateAv = { outfit:'toge', skin:'s2', acc:'none' };
+var avatarStateAv = { outfit:'toge', skin:'s2', acc:'none', gender:'male' };
 
 function drawAvatarAv() {
   var svg  = document.getElementById('avatar-av');
   if (!svg) return;
   var st   = avatarStateAv;
   var skin = SKINS.find(function(s){ return s.id === st.skin; }).color;
+  var isFemale = st.gender === 'female';
+  var hairCol  = darken(skin, 40);
 
   var html = '';
+
+  /* Cheveux arrière (femme — doit être dessiné avant le corps) */
+  if (isFemale) {
+    html += '<rect x="36" y="18" width="48" height="112" rx="24" fill="' + hairCol + '"/>';
+    html += '<ellipse cx="34" cy="82" rx="10" ry="44" fill="' + hairCol + '"/>';
+    html += '<ellipse cx="86" cy="82" rx="10" ry="44" fill="' + hairCol + '"/>';
+  }
 
   /* ── Corps selon tenue ── */
   if (st.outfit === 'toge') {
@@ -7850,29 +8109,84 @@ function drawAvatarAv() {
   /* Mains */
   html += '<ellipse cx="23" cy="126" rx="9" ry="8" fill="' + skin + '"/>';
   html += '<ellipse cx="97" cy="126" rx="9" ry="8" fill="' + skin + '"/>';
-  /* Cou */
-  html += '<rect x="50" y="56" width="20" height="20" rx="4" fill="' + skin + '"/>';
-  /* Tête */
-  html += '<ellipse cx="60" cy="44" rx="26" ry="28" fill="' + skin + '"/>';
-  /* Cheveux */
-  html += '<ellipse cx="60" cy="20" rx="26" ry="10" fill="' + darken(skin, 40) + '"/>';
-  /* Yeux */
-  html += '<ellipse cx="50" cy="42" rx="4" ry="4.5" fill="white"/>';
-  html += '<ellipse cx="70" cy="42" rx="4" ry="4.5" fill="white"/>';
-  html += '<ellipse cx="51" cy="43" rx="2.5" ry="3" fill="#222"/>';
-  html += '<ellipse cx="71" cy="43" rx="2.5" ry="3" fill="#222"/>';
-  html += '<ellipse cx="52" cy="42" rx="1" ry="1" fill="white"/>';
-  html += '<ellipse cx="72" cy="42" rx="1" ry="1" fill="white"/>';
-  /* Sourcils */
-  html += '<path d="M46 37 Q50 35 54 37" stroke="' + darken(skin,50) + '" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
-  html += '<path d="M66 37 Q70 35 74 37" stroke="' + darken(skin,50) + '" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
-  /* Nez */
-  html += '<ellipse cx="60" cy="50" rx="3" ry="2" fill="' + darken(skin,15) + '"/>';
-  /* Bouche */
-  html += '<path d="M53 57 Q60 62 67 57" stroke="' + darken(skin,30) + '" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
-  /* Oreilles */
-  html += '<ellipse cx="34" cy="44" rx="5" ry="7" fill="' + skin + '"/>';
-  html += '<ellipse cx="86" cy="44" rx="5" ry="7" fill="' + skin + '"/>';
+
+  if (isFemale) {
+    /* ══ TÊTE FÉMININE ══ */
+    /* Cou (plus fin) */
+    html += '<rect x="52" y="57" width="16" height="19" rx="4" fill="' + skin + '"/>';
+    /* Tête (ovale, légèrement plus étroite) */
+    html += '<ellipse cx="60" cy="45" rx="23" ry="27" fill="' + skin + '"/>';
+    /* Cheveux dessus — bonnet avec volume */
+    html += '<path d="M37 36 C36 20 42 9 60 8 C78 9 84 20 83 36 Q80 22 60 20 Q40 22 37 36 Z" fill="' + hairCol + '"/>';
+    /* Yeux — grands, expressifs */
+    html += '<ellipse cx="49" cy="43" rx="5.5" ry="6" fill="white"/>';
+    html += '<ellipse cx="71" cy="43" rx="5.5" ry="6" fill="white"/>';
+    html += '<ellipse cx="50" cy="44" rx="4" ry="4.5" fill="#333"/>';
+    html += '<ellipse cx="72" cy="44" rx="4" ry="4.5" fill="#333"/>';
+    html += '<ellipse cx="49" cy="42" rx="2.2" ry="2.2" fill="#556"/>';
+    html += '<ellipse cx="71" cy="42" rx="2.2" ry="2.2" fill="#556"/>';
+    html += '<ellipse cx="51" cy="42" rx="1.3" ry="1.3" fill="white"/>';
+    html += '<ellipse cx="73" cy="42" rx="1.3" ry="1.3" fill="white"/>';
+    /* Ligne de paupière et cils */
+    html += '<path d="M44 41 Q49 38 54 41" stroke="#111" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+    html += '<path d="M66 41 Q71 38 76 41" stroke="#111" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+    html += '<line x1="44" y1="41" x2="42" y2="39" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="47" y1="39" x2="46" y2="37" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="50" y1="38" x2="50" y2="36" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="53" y1="39" x2="54" y2="37" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="54" y1="41" x2="56" y2="39" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="66" y1="41" x2="64" y2="39" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="69" y1="39" x2="68" y2="37" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="72" y1="38" x2="72" y2="36" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="75" y1="39" x2="76" y2="37" stroke="#111" stroke-width="1.2"/>';
+    html += '<line x1="76" y1="41" x2="78" y2="39" stroke="#111" stroke-width="1.2"/>';
+    /* Sourcils — fins et très arqués */
+    html += '<path d="M44 35 Q49 31 55 34" stroke="' + darken(skin,55) + '" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
+    html += '<path d="M65 34 Q71 31 76 35" stroke="' + darken(skin,55) + '" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
+    /* Fards à joues */
+    html += '<ellipse cx="43" cy="51" rx="8" ry="4" fill="rgba(215,100,110,.18)"/>';
+    html += '<ellipse cx="77" cy="51" rx="8" ry="4" fill="rgba(215,100,110,.18)"/>';
+    /* Nez (délicat) */
+    html += '<path d="M57 49 Q60 53 63 49" stroke="' + darken(skin,20) + '" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
+    /* Lèvres colorées */
+    html += '<path d="M53 58 Q56 56 60 57 Q64 56 67 58 Q63 62 60 63 Q57 62 53 58 Z" fill="#c85070"/>';
+    html += '<path d="M53 58 L67 58" stroke="' + darken(skin,15) + '" stroke-width="0.6" opacity="0.7"/>';
+    html += '<path d="M56 57 Q60 55.5 64 57" stroke="rgba(255,255,255,.25)" stroke-width="0.8" fill="none"/>';
+    /* Oreilles (plus petites, près de la tête) */
+    html += '<ellipse cx="37" cy="45" rx="4" ry="6" fill="' + skin + '"/>';
+    html += '<ellipse cx="83" cy="45" rx="4" ry="6" fill="' + skin + '"/>';
+    /* Mèches latérales */
+    html += '<ellipse cx="36" cy="62" rx="7" ry="24" fill="' + hairCol + '"/>';
+    html += '<ellipse cx="84" cy="62" rx="7" ry="24" fill="' + hairCol + '"/>';
+
+  } else {
+    /* ══ TÊTE MASCULINE ══ */
+    /* Cou */
+    html += '<rect x="50" y="56" width="20" height="20" rx="4" fill="' + skin + '"/>';
+    /* Tête */
+    html += '<ellipse cx="60" cy="44" rx="26" ry="28" fill="' + skin + '"/>';
+    /* Cheveux */
+    html += '<ellipse cx="60" cy="20" rx="26" ry="10" fill="' + hairCol + '"/>';
+    /* Yeux */
+    html += '<ellipse cx="50" cy="42" rx="4" ry="4.5" fill="white"/>';
+    html += '<ellipse cx="70" cy="42" rx="4" ry="4.5" fill="white"/>';
+    html += '<ellipse cx="51" cy="43" rx="2.5" ry="3" fill="#222"/>';
+    html += '<ellipse cx="71" cy="43" rx="2.5" ry="3" fill="#222"/>';
+    /* Reflets yeux */
+    html += '<ellipse cx="52" cy="42" rx="1" ry="1" fill="white"/>';
+    html += '<ellipse cx="72" cy="42" rx="1" ry="1" fill="white"/>';
+    /* Sourcils */
+    html += '<path d="M46 37 Q50 35 54 37" stroke="' + darken(skin,50) + '" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
+    html += '<path d="M66 37 Q70 35 74 37" stroke="' + darken(skin,50) + '" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
+    /* Nez */
+    html += '<ellipse cx="60" cy="50" rx="3" ry="2" fill="' + darken(skin,15) + '"/>';
+    /* Bouche */
+    html += '<path d="M53 57 Q60 62 67 57" stroke="' + darken(skin,30) + '" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
+    /* Oreilles */
+    html += '<ellipse cx="34" cy="44" rx="5" ry="7" fill="' + skin + '"/>';
+    html += '<ellipse cx="86" cy="44" rx="5" ry="7" fill="' + skin + '"/>';
+  }
+
   /* Jambes */
   var legCol = st.outfit === 'toge' ? '#111' : st.outfit === 'super' ? '#1a3a8a' : st.outfit === 'cowboy' ? '#3a1a00' : st.outfit === 'doctor' ? '#c8c0b0' : st.outfit === 'zombie' ? '#1a2a0a' : st.outfit === 'astronaut' ? '#c0b8ae' : st.outfit === 'chef' ? '#ddd8cc' : st.outfit === 'wizard' ? '#3a0a6a' : st.outfit === 'vampire' ? '#0a0a1a' : st.outfit === 'robot' ? '#4a5a6a' : st.outfit === 'knight' ? '#6a7a8a' : st.outfit === 'firefighter' ? '#c07000' : st.outfit === 'prisoner' ? '#e8e8e8' : st.outfit === 'detective' ? '#4a2a0a' : '#0a0a0a';
   html += '<rect x="34" y="136" width="20" height="14" rx="4" fill="' + legCol + '"/>';
@@ -8774,22 +9088,24 @@ loadInterroScreen = function() {
 
 
 /* ══ AVOCAT B + AVATAR DANS ÉCRAN ══ */
-var avatarStateAv2 = { outfit:'super', skin:'s3', acc:'none' };
+var avatarStateAv2 = { outfit:'super', skin:'s3', acc:'none', gender:'male' };
 
 function drawAvatarAv2() {
   var svg2 = document.getElementById('avatar-av2');
   if (!svg2) return;
   /* Swap temporaire pour réutiliser drawAvatarAv */
   var saved = JSON.parse(JSON.stringify(avatarStateAv));
-  avatarStateAv.outfit = avatarStateAv2.outfit;
-  avatarStateAv.skin   = avatarStateAv2.skin;
-  avatarStateAv.acc    = avatarStateAv2.acc;
+  avatarStateAv.outfit  = avatarStateAv2.outfit;
+  avatarStateAv.skin    = avatarStateAv2.skin;
+  avatarStateAv.acc     = avatarStateAv2.acc;
+  avatarStateAv.gender  = avatarStateAv2.gender;
   var real = document.getElementById('avatar-av');
   drawAvatarAv();
   svg2.innerHTML = real.innerHTML;
-  avatarStateAv.outfit = saved.outfit;
-  avatarStateAv.skin   = saved.skin;
-  avatarStateAv.acc    = saved.acc;
+  avatarStateAv.outfit  = saved.outfit;
+  avatarStateAv.skin    = saved.skin;
+  avatarStateAv.acc     = saved.acc;
+  avatarStateAv.gender  = saved.gender;
   drawAvatarAv();
 }
 
@@ -11162,9 +11478,14 @@ function mmOpenProgress(){
 /* ══════════════════════════════════════════════
    ÉCRAN PERSONNAGES (character creator)
 ══════════════════════════════════════════════ */
+var GENDERS = [
+  { id:'male',   title:'Homme', label:'♂' },
+  { id:'female', title:'Femme', label:'♀' }
+];
 var CS_CHARACTERS = [
   { key:'a', label:'🕵️ Inspecteur A', state: avatarState.a, draw: function(){ drawAvatar('a'); }, sync: function(){ if (typeof _syncAvatarBtns === 'function') _syncAvatarBtns('a'); }, nameId:'insp-a-name', bigId:'avatar-a',
     cats:[
+      { key:'gender', label:'Genre',      arr:GENDERS,     field:'gender', rarity:false },
       { key:'hat',    label:'Chapeau',    arr:HATS,        field:'hat',    rarity:true  },
       { key:'jacket', label:'Veste',      arr:JACKETS,     field:'jacket', rarity:true,  swatch:true },
       { key:'skin',   label:'Peau',       arr:SKINS,       field:'skin',   rarity:false, swatch:true },
@@ -11172,6 +11493,7 @@ var CS_CHARACTERS = [
     ] },
   { key:'b', label:'👮 Inspecteur B', state: avatarState.b, draw: function(){ drawAvatar('b'); }, sync: function(){ if (typeof _syncAvatarBtns === 'function') _syncAvatarBtns('b'); }, nameId:'insp-b-name', bigId:'avatar-b',
     cats:[
+      { key:'gender', label:'Genre',      arr:GENDERS,     field:'gender', rarity:false },
       { key:'hat',    label:'Chapeau',    arr:HATS,        field:'hat',    rarity:true  },
       { key:'jacket', label:'Veste',      arr:JACKETS,     field:'jacket', rarity:true,  swatch:true },
       { key:'skin',   label:'Peau',       arr:SKINS,       field:'skin',   rarity:false, swatch:true },
@@ -11179,12 +11501,14 @@ var CS_CHARACTERS = [
     ] },
   { key:'av', label:'⚖️ Avocat A', state: avatarStateAv, draw: function(){ drawAvatarAv(); }, sync: function(){}, nameId:'insp-av-name', bigId:'avatar-av',
     cats:[
+      { key:'gender', label:'Genre',      arr:GENDERS,        field:'gender', rarity:false },
       { key:'outfit', label:'Tenue',      arr:AV_OUTFITS,     field:'outfit', rarity:true },
       { key:'skin',   label:'Peau',       arr:SKINS,          field:'skin',   rarity:false, swatch:true },
       { key:'acc',    label:'Accessoire', arr:AV_ACCESSORIES, field:'acc',    rarity:true }
     ] },
   { key:'av2', label:'⚖️ Avocat B', state: avatarStateAv2, draw: function(){ drawAvatarAv2(); }, sync: function(){}, nameId:'insp-av2-name', bigId:'avatar-av2',
     cats:[
+      { key:'gender', label:'Genre',      arr:GENDERS,        field:'gender', rarity:false },
       { key:'outfit', label:'Tenue',      arr:AV_OUTFITS,     field:'outfit', rarity:true },
       { key:'skin',   label:'Peau',       arr:SKINS,          field:'skin',   rarity:false, swatch:true },
       { key:'acc',    label:'Accessoire', arr:AV_ACCESSORIES, field:'acc',    rarity:true }
@@ -12699,6 +13023,10 @@ document.addEventListener('DOMContentLoaded',function(){
 ══════════════════════════════════════════════ */
 var _SPEC_LS_KEY='alibi_spec_v4';
 var _SPEC_IS_SPEC=(window.location.hash||'').toLowerCase().indexOf('spectateur')!==-1;
+var _SPEC_REMOTE_CODE=(function(){
+  var m=(window.location.hash||'').match(/[#]spectateur-([A-Za-z0-9_-]+)/i);
+  return m?m[1]:null;
+})();
 if(_SPEC_IS_SPEC) document.documentElement.classList.add('spectator-mode');
 
 function _specPairData(pr){
@@ -12728,6 +13056,10 @@ function _specBroadcast(){
       pairs:[_specPairData(state&&state.pairs&&state.pairs[0]),_specPairData(state&&state.pairs&&state.pairs[1])]
     };
     localStorage.setItem(_SPEC_LS_KEY,JSON.stringify(data));
+    /* Diffusion Firebase pour spectateurs distants */
+    if(online.enabled&&online.db&&online.roomId){
+      online.db.ref('rooms/'+online.roomId+'/specSnap').set(data).catch(function(){});
+    }
   }catch(e){}
 }
 
@@ -12735,11 +13067,11 @@ function _specRender(d){
   if(!d||d.type!=='state')return;
   var ph=document.getElementById('spec-phase');
   if(ph)ph.textContent=d.phaseLabel||'—';
-  var dot=document.getElementById('spec-live-dot');
-  var ltxt=document.getElementById('spec-live-txt');
-  if(dot){dot.style.background='var(--ok)';dot.style.animation='none';}
+  var pill=document.getElementById('spec-live-pill');
+  var ftxt=document.getElementById('spec-footer-txt');
+  if(pill)pill.style.display='flex';
   var lag=Date.now()-(d.ts||0);
-  if(ltxt)ltxt.textContent='En direct · '+d.phaseLabel+(lag<5000?' · Juste maintenant':' · il y a '+(Math.round(lag/1000))+'s');
+  if(ftxt)ftxt.textContent='En direct · '+d.phaseLabel+(lag<5000?' · Maintenant':' · il y a '+(Math.round(lag/1000))+'s');
 
   /* ── Écran résultats ── */
   var sv=document.getElementById('spectator-view');
@@ -12971,6 +13303,7 @@ function chatListen(){
       var badge=document.getElementById('chat-badge');
       badge.textContent=_chatUnread>9?'9+':String(_chatUnread);
       badge.classList.add('show');
+      if(!isMe)playNotifSound();
     }
   });
   document.getElementById('btn-chat').classList.add('visible');
@@ -13000,7 +13333,19 @@ async function voiceToggle(){
 async function voiceJoin(){
   if(!online.roomId){toast('Rejoins une partie d\'abord','warn');return;}
   try{
-    _rtcStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+    var savedMic=localStorage.getItem('alibi_mic');
+    var audioConstraints=savedMic?{deviceId:{exact:savedMic}}:true;
+    try{
+      _rtcStream=await navigator.mediaDevices.getUserMedia({audio:audioConstraints,video:false});
+    }catch(eConstraint){
+      /* deviceId sauvegardé introuvable — on retire le cache et on réessaie avec n'importe quel micro */
+      if(savedMic){
+        localStorage.removeItem('alibi_mic');
+        _rtcStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+      } else {
+        throw eConstraint;
+      }
+    }
     _rtcPeer=new RTCPeerConnection({iceServers:_rtcIceServers});
     _rtcStream.getTracks().forEach(function(t){_rtcPeer.addTrack(t,_rtcStream);});
 
@@ -13009,6 +13354,10 @@ async function voiceJoin(){
       _rtcAudioEl=new Audio();
       _rtcAudioEl.srcObject=e.streams[0];
       _rtcAudioEl.autoplay=true;
+      var savedVoiceVol=localStorage.getItem('alibi_voice_vol');
+      if(savedVoiceVol!==null)_rtcAudioEl.volume=Math.min(1,parseFloat(savedVoiceVol)/100);
+      var savedSpk=localStorage.getItem('alibi_spk');
+      if(savedSpk&&_rtcAudioEl.setSinkId)_rtcAudioEl.setSinkId(savedSpk).catch(function(){});
       _rtcAudioEl.play().catch(function(){});
     };
 
@@ -13095,6 +13444,191 @@ function voiceUpdateBtn(){
   if(lbtn)lbtn.textContent=icon;
 }
 
+/* ══ PARAMÈTRES ══ */
+function settingsOpen(){
+  document.getElementById('settings-overlay').classList.add('active');
+  settingsSyncVolumes();
+  settingsLoadDevices();
+  var savedSize=localStorage.getItem('alibi_textsize')||'normal';
+  document.querySelectorAll('.set-textsize-btn').forEach(function(b){b.classList.toggle('active',b.dataset.size===savedSize);});
+  var notifTrack=document.getElementById('set-notif-track');
+  if(notifTrack)notifTrack.classList.toggle('on',localStorage.getItem('alibi_notif_sound')!=='0');
+  var cbTrack=document.getElementById('set-colorblind-track');
+  if(cbTrack)cbTrack.classList.toggle('on',document.documentElement.classList.contains('colorblind'));
+  var savedSkin=localStorage.getItem('alibi_card_skin')||'classique';
+  document.querySelectorAll('.set-skin-btn').forEach(function(b){b.classList.toggle('active',b.dataset.skin===savedSkin);});
+}
+function settingsClose(){
+  document.getElementById('settings-overlay').classList.remove('active');
+  testMicStop();
+}
+function settingsNav(el){
+  document.querySelectorAll('.set-nav-item').forEach(function(n){n.classList.remove('active');});
+  document.querySelectorAll('.set-pane').forEach(function(p){p.classList.remove('active');});
+  el.classList.add('active');
+  var pane=document.getElementById('set-pane-'+el.dataset.pane);
+  if(pane)pane.classList.add('active');
+}
+function settingsSyncVolumes(){
+  var mv=document.getElementById('opt-music-vol');
+  var sv=document.getElementById('opt-sfx-vol');
+  var smv=document.getElementById('set-music-vol');
+  var ssv=document.getElementById('set-sfx-vol');
+  var svv=document.getElementById('set-voice-vol');
+  if(mv&&smv){smv.value=mv.value;document.getElementById('set-music-val').textContent=mv.value+'%';}
+  if(sv&&ssv){ssv.value=sv.value;document.getElementById('set-sfx-val').textContent=sv.value+'%';}
+  var savedVv=localStorage.getItem('alibi_voice_vol')||'80';
+  if(svv){svv.value=savedVv;document.getElementById('set-voice-val').textContent=savedVv+'%';}
+}
+function settingsVolChange(type,val){
+  var display=document.getElementById('set-'+type+'-val');
+  if(display)display.textContent=val+'%';
+  if(type==='voice'){
+    localStorage.setItem('alibi_voice_vol',val);
+    if(window._rtcAudioEl)_rtcAudioEl.volume=Math.min(1,val/100);
+    return;
+  }
+  var opt=document.getElementById('opt-'+type+'-vol');
+  var optVal=document.getElementById('opt-'+type+'-vol-val');
+  if(opt){opt.value=val;if(optVal)optVal.textContent=val+'%';if(typeof onVolumeChange==='function')onVolumeChange();}
+}
+function playNotifSound(){
+  if(localStorage.getItem('alibi_notif_sound')==='0')return;
+  try{
+    var ac=new(window.AudioContext||window.webkitAudioContext)();
+    var o=ac.createOscillator(),g=ac.createGain();
+    o.type='sine';o.frequency.value=880;
+    o.connect(g);g.connect(ac.destination);
+    var t=ac.currentTime;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(0.08,t+0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.35);
+    o.start(t);o.stop(t+0.38);
+    o.onended=function(){ac.close();};
+  }catch(e){}
+}
+function settingsNotifToggle(){
+  var cur=localStorage.getItem('alibi_notif_sound')!=='0';
+  var next=!cur;
+  localStorage.setItem('alibi_notif_sound',next?'1':'0');
+  var track=document.getElementById('set-notif-track');
+  if(track)track.classList.toggle('on',next);
+  if(next)playNotifSound();
+}
+function settingsColorblindToggle(){
+  var cur=document.documentElement.classList.contains('colorblind');
+  document.documentElement.classList.toggle('colorblind');
+  localStorage.setItem('alibi_colorblind',cur?'0':'1');
+  var track=document.getElementById('set-colorblind-track');
+  if(track)track.classList.toggle('on',!cur);
+}
+function settingsCardSkin(skin){
+  if(skin==='classique'){delete document.documentElement.dataset.cardSkin;}
+  else{document.documentElement.dataset.cardSkin=skin;}
+  localStorage.setItem('alibi_card_skin',skin);
+  document.querySelectorAll('.set-skin-btn').forEach(function(b){b.classList.toggle('active',b.dataset.skin===skin);});
+}
+async function settingsLoadDevices(){
+  var micSel=document.getElementById('set-mic-select');
+  var spkSel=document.getElementById('set-spk-select');
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    micSel.innerHTML='<option>API audio non disponible</option>';
+    spkSel.innerHTML='<option>Sortie par défaut</option>';
+    return;
+  }
+  /* 1. Essayer d'abord enumerateDevices sans getUserMedia (Electron avec permission handler) */
+  try{
+    var devicesFirst=await navigator.mediaDevices.enumerateDevices();
+    var hasLabels=devicesFirst.some(function(d){return d.label;});
+    if(!hasLabels){
+      /* 2. Pas de labels → demander la permission via getUserMedia pour débloquer les noms */
+      var stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+      stream.getTracks().forEach(function(t){t.stop();});
+      devicesFirst=await navigator.mediaDevices.enumerateDevices();
+    }
+    var mics=devicesFirst.filter(function(d){return d.kind==='audioinput';});
+    var spks=devicesFirst.filter(function(d){return d.kind==='audiooutput';});
+    var savedMic=localStorage.getItem('alibi_mic')||'';
+    var savedSpk=localStorage.getItem('alibi_spk')||'';
+    if(!mics.length){
+      micSel.innerHTML='<option value="">Aucun micro détecté</option>';
+    }else{
+      micSel.innerHTML=mics.map(function(d,i){return '<option value="'+d.deviceId+'"'+(d.deviceId===savedMic?' selected':'')+'>'+( d.label||'Micro '+(i+1))+'</option>';}).join('');
+    }
+    spkSel.innerHTML=spks.length?spks.map(function(d,i){return '<option value="'+d.deviceId+'"'+(d.deviceId===savedSpk?' selected':'')+'>'+( d.label||'Sortie '+(i+1))+'</option>';}).join(''):'<option value="">Sortie par défaut</option>';
+    micSel.onchange=function(){localStorage.setItem('alibi_mic',micSel.value);};
+    spkSel.onchange=function(){localStorage.setItem('alibi_spk',spkSel.value);if(_rtcAudioEl&&_rtcAudioEl.setSinkId)_rtcAudioEl.setSinkId(spkSel.value).catch(function(){});};
+  }catch(e){
+    var isWin=(navigator.userAgent||'').indexOf('Windows')!==-1;
+    micSel.innerHTML='<option>Accès refusé — '+(isWin?'vérifier Paramètres Windows > Confidentialité > Micro':'permission navigateur refusée')+'</option>';
+    spkSel.innerHTML='<option>Sortie par défaut</option>';
+    console.warn('settingsLoadDevices:',e);
+  }
+}
+/* Test micro */
+var _micTestStream=null,_micTestCtx=null,_micTestTimer=null;
+async function testMicToggle(){
+  if(_micTestStream){testMicStop();return;}
+  var btn=document.getElementById('set-mic-test-btn');
+  var hint=document.getElementById('set-mic-test-hint');
+  try{
+    var savedMic=localStorage.getItem('alibi_mic');
+    var constraint=savedMic?{deviceId:{exact:savedMic}}:true;
+    _micTestStream=await navigator.mediaDevices.getUserMedia({audio:constraint,video:false});
+    _micTestCtx=new AudioContext();
+    var src=_micTestCtx.createMediaStreamSource(_micTestStream);
+    src.connect(_micTestCtx.destination);
+    btn.textContent='⏹ Arrêter';btn.classList.add('active');
+    if(hint)hint.textContent='Parlez — vous devriez vous entendre dans votre casque.';
+    _micTestTimer=setTimeout(testMicStop,5000);
+  }catch(e){toast('Erreur micro : '+e.message,'danger');}
+}
+function testMicStop(){
+  clearTimeout(_micTestTimer);_micTestTimer=null;
+  if(_micTestStream){_micTestStream.getTracks().forEach(function(t){t.stop();});_micTestStream=null;}
+  if(_micTestCtx){_micTestCtx.close();_micTestCtx=null;}
+  var btn=document.getElementById('set-mic-test-btn');
+  var hint=document.getElementById('set-mic-test-hint');
+  if(btn){btn.textContent='🎤 Tester le micro (5 sec)';btn.classList.remove('active');}
+  if(hint)hint.textContent='Cliquez pour vous entendre dans votre casque pendant 5 secondes.';
+}
+/* Taille du texte */
+function textSizeSet(size){
+  var map={small:'92%',normal:'100%',large:'112%'};
+  document.documentElement.style.fontSize=map[size]||'100%';
+  localStorage.setItem('alibi_textsize',size);
+  document.querySelectorAll('.set-textsize-btn').forEach(function(b){b.classList.toggle('active',b.dataset.size===size);});
+}
+(function(){var s=localStorage.getItem('alibi_textsize')||'normal';document.documentElement.style.fontSize=({small:'92%',normal:'100%',large:'112%'})[s]||'100%';})();
+(function(){
+  if(localStorage.getItem('alibi_colorblind')==='1')document.documentElement.classList.add('colorblind');
+  var skin=localStorage.getItem('alibi_card_skin')||'classique';
+  if(skin&&skin!=='classique')document.documentElement.dataset.cardSkin=skin;
+})();
+(function(){
+  if(_SPEC_IS_SPEC)return; /* pas de bannière en mode spectateur */
+  try{
+    var raw=localStorage.getItem('alibi_session_v4');
+    if(!raw)return;
+    var s=JSON.parse(raw);
+    if(!s||!s.roomId||(Date.now()-(s.savedAt||0))>3600000){localStorage.removeItem('alibi_session_v4');return;}
+    var banner=document.getElementById('reconnect-banner');
+    var codeEl=document.getElementById('reconnect-code');
+    var roleEl=document.getElementById('reconnect-role');
+    if(codeEl)codeEl.textContent=s.roomId;
+    if(roleEl)roleEl.textContent=(s.isHost?'👑 Hôte':'👤 Invité')+' · '+escapeHtml(s.playerName||'Joueur');
+    if(banner)banner.classList.add('show');
+  }catch(e){}
+})();
+/* ESC → ouvre/ferme paramètres */
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape')return;
+  var ov=document.getElementById('settings-overlay');
+  if(ov&&ov.classList.contains('active')){settingsClose();return;}
+  var anyModal=document.querySelector('.modal-overlay[style*="flex"],.modal-overlay[style*="block"]');
+  if(!anyModal)settingsOpen();
+});
+
 var _emojiOpen=false;
 var _EMOJIS=[
 '😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','🫠','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','🥲','😋','😛','😜','🤪','😝','🤑','🤗','🫡','🤭','🫢','🫣','🤫','🤔','🫤','😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤮','🤧','🥵','🥶','🥴','😵','🤯','🤠','🥸','😎','🤓','🧐','😕','🫥','😟','🙁','😮','😯','😲','😳','🥺','🫹','😦','😧','😨','😰','😥','😢','😭','😱','😖','😣','😞','😓','😩','😫','🥱','😤','😡','😠','🤬','😈','👿','💀','☠️','💩','🤡','👹','👺','👻','👽','👾','🤖',
@@ -13131,9 +13665,70 @@ document.addEventListener('click',function(ev){
   }
 });
 
+/* ─── Spectateur en app (sans nouvel onglet) ─── */
+var _specRemoteRef = null;
+var _specClockInterval = null;
+
+function joinAsSpectator(){
+  var inp = document.getElementById('online-room-input');
+  var code = (inp ? inp.value.trim() : '').toUpperCase();
+  if(!code){ toast('Entre le code de la partie à observer','warn'); return; }
+  if(!onlineInitFirebase()){ toast('Impossible d\'initialiser Firebase','danger'); return; }
+  toast('🔍 Connexion spectateur…','ok');
+  online.db.ref('rooms/'+code).once('value').then(function(snap){
+    if(!snap.exists()){ toast('Code introuvable — la partie n\'existe pas ou a expiré','danger'); return; }
+    /* Entrer en mode spectateur + jouer la cinématique */
+    document.documentElement.classList.add('spectator-mode');
+    _specPlayIntro(function(){
+      /* Afficher le bouton Quitter une fois la cinématique terminée */
+      var exitBtn = document.getElementById('spec-exit-btn');
+      if(exitBtn) exitBtn.style.display = 'inline-block';
+    });
+    /* Horloge (démarre immédiatement, visible après la cinématique) */
+    if(_specClockInterval) clearInterval(_specClockInterval);
+    _specClockInterval = setInterval(function(){
+      var el = document.getElementById('spec-clock');
+      if(el){ var n=new Date(); el.textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'); }
+    }, 1000);
+    /* Statut */
+    var pill = document.getElementById('spec-live-pill');
+    var ftxt = document.getElementById('spec-footer-txt');
+    if(pill) pill.style.display='flex';
+    if(ftxt) ftxt.textContent='Connexion en cours — code : '+code;
+    /* Listener Firebase (démarre en parallèle de la cinématique) */
+    if(_specRemoteRef) _specRemoteRef.off();
+    _specRemoteRef = online.db.ref('rooms/'+code+'/specSnap');
+    _specRemoteRef.on('value', function(s){
+      var d = s.val();
+      if(d && d.ts){
+        _specRender(d);
+        if(ftxt) ftxt.textContent='En direct · '+(d.phaseLabel||'—')+' · Code '+code;
+      }
+    });
+    toast('📺 Mode spectateur actif — code '+code,'ok');
+  }).catch(function(e){ toast('Connexion impossible : '+e.message,'danger'); });
+}
+
+function exitSpectatorMode(){
+  document.documentElement.classList.remove('spectator-mode');
+  if(_specRemoteRef){ _specRemoteRef.off(); _specRemoteRef=null; }
+  if(_specClockInterval){ clearInterval(_specClockInterval); _specClockInterval=null; }
+  var sv = document.getElementById('spectator-view');
+  if(sv) sv.classList.remove('spec-results');
+  var exitBtn = document.getElementById('spec-exit-btn');
+  if(exitBtn) exitBtn.style.display = 'none';
+  var pill = document.getElementById('spec-live-pill');
+  if(pill) pill.style.display = 'none';
+  var ftxt = document.getElementById('spec-footer-txt');
+  if(ftxt) ftxt.textContent = 'En attente de connexion…';
+  var ph = document.getElementById('spec-phase');
+  if(ph) ph.textContent = 'EN ATTENTE';
+}
+
 /* ─── Ouvrir l'onglet spectateur directement ─── */
 function openSpectateur(){
-  var url=window.location.href.split('#')[0]+'#spectateur';
+  var suffix = (online.enabled && online.roomId) ? '#spectateur-'+online.roomId : '#spectateur';
+  var url=window.location.href.split('#')[0]+suffix;
   _specBroadcast();
   var w=null;
   try{w=window.open(url,'_blank');}catch(e){}
@@ -13177,31 +13772,49 @@ function specCopyUrl(){
   if(btn){btn.textContent='✓ Copié !';setTimeout(function(){btn.textContent='📋 Copier';},2000);}
 }
 
+/* ─── Cinématique spectateur (appelable depuis l'app ou l'onglet dédié) ─── */
+function _specPlayIntro(onDone){
+  var intro=document.getElementById('spec-intro');
+  if(!intro){if(onDone)onDone();return;}
+  /* Réinitialiser l'intro si elle a déjà été jouée */
+  intro.style.display='';
+  intro.classList.remove('si-exiting');
+  var ldEl=document.getElementById('si-loading');
+  if(ldEl){ldEl.textContent='Acquisition du signal…';ldEl.classList.remove('ok');}
+  /* Forcer un reflow pour relancer les animations CSS */
+  void intro.offsetWidth;
+  /* Recharger les animations en remplaçant le nœud (trick: clone + replace) */
+  var clone=intro.cloneNode(true);
+  intro.parentNode.replaceChild(clone,intro);
+  intro=clone;
+  ldEl=document.getElementById('si-loading');
+  /* Horodatage live */
+  var tsEl=document.getElementById('si-ts');
+  var _tick=null;
+  if(tsEl){
+    function _updateTs(){var n=new Date();tsEl.textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');}
+    _updateTs();
+    _tick=setInterval(_updateTs,1000);
+  }
+  /* "✓ Signal établi" quand la barre est pleine (bar: 1.38s delay 1.68s → done ≈3.06s) */
+  setTimeout(function(){
+    if(ldEl){ldEl.textContent='✓ Signal établi';ldEl.classList.add('ok');}
+  },3100);
+  /* Fade-out puis masquage */
+  setTimeout(function(){
+    intro.classList.add('si-exiting');
+    setTimeout(function(){
+      intro.style.display='none';
+      if(_tick)clearInterval(_tick);
+      if(onDone)onDone();
+    },520);
+  },3550);
+}
+
 /* ─── RÉCEPTEUR (onglet #spectateur) ─── */
 if(_SPEC_IS_SPEC){
   /* ── Intro cinématique ── */
-  (function(){
-    var intro=document.getElementById('spec-intro');
-    if(!intro)return;
-    /* Horodatage live dans l'intro */
-    var tsEl=document.getElementById('si-ts');
-    var ldEl=document.getElementById('si-loading');
-    if(tsEl){
-      var _tick=setInterval(function(){
-        var n=new Date();
-        tsEl.textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
-      },1000);
-      var n=new Date();
-      tsEl.textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
-    }
-    /* "PRÊT" quand la barre est pleine */
-    setTimeout(function(){if(ldEl)ldEl.textContent='Prêt ✓';},4600);
-    /* Fade out puis masquage */
-    setTimeout(function(){
-      intro.classList.add('si-out');
-      setTimeout(function(){intro.style.display='none';if(typeof _tick!=='undefined')clearInterval(_tick);},600);
-    },3200);
-  })();
+  _specPlayIntro();
 
   /* Horloge principale */
   setInterval(function(){
@@ -13239,10 +13852,26 @@ if(_SPEC_IS_SPEC){
     if(_si){var _sd=JSON.parse(_si);if(_sd){_specLastTs=_sd.ts||0;_specRender(_sd);}}
   }catch(e){}
 
-  var _sDot=document.getElementById('spec-live-dot');
-  var _sLtxt=document.getElementById('spec-live-txt');
-  if(_sDot){_sDot.style.background='var(--ok)';_sDot.style.animation='none';}
-  if(_sLtxt)_sLtxt.textContent='Spectateur prêt — joue sur l\'autre onglet';
+  var _sPill=document.getElementById('spec-live-pill');
+  var _sFtxt=document.getElementById('spec-footer-txt');
+  if(_sPill)_sPill.style.display='flex';
+
+  if(_SPEC_REMOTE_CODE){
+    /* Spectateur distant : écoute Firebase */
+    if(_sFtxt)_sFtxt.textContent='Connexion Firebase — code : '+_SPEC_REMOTE_CODE+' …';
+    if(onlineInitFirebase()&&online.db){
+      online.db.ref('rooms/'+_SPEC_REMOTE_CODE+'/specSnap').on('value',function(snap){
+        var d=snap.val();
+        if(d&&d.ts&&d.ts!==_specLastTs){
+          _specLastTs=d.ts;
+          _specRender(d);
+          if(_sFtxt)_sFtxt.textContent='En direct · '+d.phaseLabel+' · Code '+_SPEC_REMOTE_CODE;
+        }
+      });
+    }
+  } else {
+    if(_sFtxt)_sFtxt.textContent='Spectateur prêt — partie sur l\'autre onglet';
+  }
 }
 
 </script>
@@ -13295,18 +13924,24 @@ if(_SPEC_IS_SPEC){
 
 <!-- ══ MODE SPECTATEUR ══ -->
 <div id="spectator-view">
-  <!-- Intro cinématique (s'affiche au chargement de l'onglet spectateur) -->
+  <!-- Intro cinématique -->
   <div id="spec-intro">
     <div class="si-crt"></div>
+    <div class="si-vignette"></div>
     <div class="si-scan"></div>
-    <div class="si-live"><div class="si-live-dot"></div><span class="si-live-txt">En direct</span></div>
-    <div class="si-ts" id="si-ts">--:--:--</div>
-    <div class="si-logo">ALIBI</div>
-    <div class="si-mode">Mode Spectateur</div>
-    <div class="si-sep"></div>
-    <div class="si-question">Êtes-vous prêts ?</div>
-    <div class="si-bar-wrap"><div class="si-bar"></div></div>
-    <div class="si-loading" id="si-loading">Initialisation…</div>
+    <div class="si-top-bar">
+      <div class="si-live"><div class="si-live-dot"></div><span class="si-live-txt">En direct</span></div>
+      <div class="si-ts" id="si-ts">--:--:--</div>
+    </div>
+    <div class="si-center">
+      <div class="si-logo">ALIBI</div>
+      <div class="si-sep"></div>
+      <div class="si-mode">Mode Spectateur</div>
+      <div class="si-status-wrap">
+        <div class="si-bar-wrap"><div class="si-bar"></div></div>
+        <div class="si-loading" id="si-loading">Acquisition du signal…</div>
+      </div>
+    </div>
   </div>
 
   <!-- Overlay résultats (apparaît quand screen=results) -->
@@ -13323,7 +13958,14 @@ if(_SPEC_IS_SPEC){
   <div class="spec-header">
     <div class="spec-logo">ALIBI</div>
     <div class="spec-phase-badge" id="spec-phase">EN ATTENTE</div>
-    <div class="spec-clock" id="spec-clock">--:--</div>
+    <div class="spec-header-right">
+      <div class="spec-live-pill" id="spec-live-pill" style="display:none;">
+        <div class="spec-live-dot" id="spec-live-dot"></div>
+        <span class="spec-live-txt" id="spec-live-txt">En direct</span>
+      </div>
+      <div class="spec-clock" id="spec-clock">--:--</div>
+      <button id="spec-exit-btn" onclick="exitSpectatorMode()" title="Quitter le mode spectateur" style="display:none;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--muted);font-size:.62rem;font-family:var(--hud-font);letter-spacing:.12em;text-transform:uppercase;padding:4px 11px;border-radius:3px;cursor:pointer;transition:color .15s,border-color .15s;" onmouseover="this.style.color='var(--paper)';this.style.borderColor='rgba(255,255,255,.4)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='rgba(255,255,255,.15)'">✕ Quitter</button>
+    </div>
   </div>
   <div class="spec-pairs">
     <div class="spec-pair pair-0" id="spec-pair-0">
@@ -13350,13 +13992,135 @@ if(_SPEC_IS_SPEC){
     </div>
   </div>
   <div class="spec-footer">
-    <div class="spec-live-dot" id="spec-live-dot" style="background:var(--wire);animation:none"></div>
-    <div class="spec-live-txt" id="spec-live-txt">En attente de connexion…</div>
+    <div class="spec-live-txt" id="spec-footer-txt">En attente de connexion…</div>
   </div>
 </div>
 
 <!-- ══ BOUTON SPECTATEUR (fixe) ══ -->
 <button id="btn-spectateur" onclick="openSpectateur()" title="Ouvrir le mode Spectateur (2ème écran)">📺</button>
+<!-- ══ PARAMÈTRES ══ -->
+<div id="settings-overlay">
+  <div id="settings-panel">
+    <div id="settings-header">
+      <span>⚙️ PARAMÈTRES</span>
+      <button onclick="settingsClose()" title="Fermer (Échap)">✕</button>
+    </div>
+    <div id="settings-inner">
+      <nav id="settings-nav">
+        <div class="set-nav-item active" data-pane="langue" onclick="settingsNav(this)">🌍 Langue</div>
+        <div class="set-nav-item" data-pane="audio" onclick="settingsNav(this)">🎙️ Audio</div>
+        <div class="set-nav-item" data-pane="apparence" onclick="settingsNav(this)">🎨 Apparence</div>
+        <div class="set-nav-item" data-pane="affichage" onclick="settingsNav(this)">🔤 Affichage</div>
+        <div class="set-nav-item" data-pane="raccourcis" onclick="settingsNav(this)">⌨️ Raccourcis</div>
+      </nav>
+      <div id="settings-content">
+
+        <!-- LANGUE -->
+        <div class="set-pane active" id="set-pane-langue">
+          <div>
+            <div class="set-label">Langue du jeu</div>
+            <div class="set-lang-grid" style="margin-top:10px;">
+              <div class="set-lang-btn active">🇫🇷 Français</div>
+              <div class="set-lang-btn">🇬🇧 English</div>
+              <div class="set-lang-btn">🇪🇸 Español</div>
+              <div class="set-lang-btn">🇩🇪 Deutsch</div>
+            </div>
+            <div class="set-coming" style="margin-top:10px;">Les autres langues seront disponibles dans une prochaine version.</div>
+          </div>
+        </div>
+
+        <!-- AUDIO -->
+        <div class="set-pane" id="set-pane-audio">
+          <div>
+            <div class="set-label">Microphone</div>
+            <select class="set-select" id="set-mic-select" style="margin-top:8px;"><option>Chargement…</option></select>
+          </div>
+          <div>
+            <div class="set-label">Sortie audio</div>
+            <select class="set-select" id="set-spk-select" style="margin-top:8px;"><option>Chargement…</option></select>
+          </div>
+          <div>
+            <div class="set-label" style="margin-bottom:8px;">Test micro</div>
+            <button class="set-mic-test-btn" id="set-mic-test-btn" onclick="testMicToggle()">🎤 Tester le micro (5 sec)</button>
+            <div class="set-coming" style="margin-top:6px;" id="set-mic-test-hint">Cliquez pour vous entendre dans votre casque pendant 5 secondes.</div>
+          </div>
+          <div>
+            <div class="set-label" style="margin-bottom:10px;">Volume</div>
+            <div class="set-vol-row">
+              <label>🎵 Musique</label>
+              <input type="range" min="0" max="100" id="set-music-vol" oninput="settingsVolChange('music',this.value)">
+              <span class="set-vol-val" id="set-music-val">70%</span>
+            </div>
+            <div class="set-vol-row" style="margin-top:10px;">
+              <label>🔊 Effets</label>
+              <input type="range" min="0" max="100" id="set-sfx-vol" oninput="settingsVolChange('sfx',this.value)">
+              <span class="set-vol-val" id="set-sfx-val">80%</span>
+            </div>
+            <div class="set-vol-row" style="margin-top:10px;">
+              <label>🎤 Voix</label>
+              <input type="range" min="0" max="100" id="set-voice-vol" oninput="settingsVolChange('voice',this.value)">
+              <span class="set-vol-val" id="set-voice-val">80%</span>
+            </div>
+          </div>
+          <div>
+            <div class="set-label" style="margin-bottom:8px;">Notifications</div>
+            <div class="set-toggle" onclick="settingsNotifToggle()">
+              <span class="set-toggle-label">🔔 Sons de notification chat</span>
+              <div class="set-toggle-track on" id="set-notif-track"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- APPARENCE -->
+        <div class="set-pane" id="set-pane-apparence">
+          <div>
+            <div class="set-label" style="margin-bottom:8px;">Mode daltonien</div>
+            <div class="set-toggle" onclick="settingsColorblindToggle()">
+              <span class="set-toggle-label">♿ Palette accessible — rouge → orange, vert/rouge → bleu</span>
+              <div class="set-toggle-track" id="set-colorblind-track"></div>
+            </div>
+          </div>
+          <div>
+            <div class="set-label" style="margin-bottom:10px;">Fond des cartes indices</div>
+            <div class="set-skin-grid">
+              <button class="set-skin-btn active" data-skin="classique" onclick="settingsCardSkin('classique')" style="background:rgba(20,22,27,.95);">Classique</button>
+              <button class="set-skin-btn" data-skin="cuir" onclick="settingsCardSkin('cuir')" style="background:rgba(42,18,6,.95);">Cuir</button>
+              <button class="set-skin-btn" data-skin="marbre" onclick="settingsCardSkin('marbre')" style="background:linear-gradient(118deg,rgba(18,18,26,1) 0%,rgba(30,26,42,1) 50%,rgba(18,18,26,1) 100%);">Marbre</button>
+              <button class="set-skin-btn" data-skin="ardoise" onclick="settingsCardSkin('ardoise')" style="background:rgba(8,14,28,.98);">Ardoise</button>
+              <button class="set-skin-btn" data-skin="bois" onclick="settingsCardSkin('bois')" style="background:rgba(20,9,2,.95);">Bois</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- AFFICHAGE -->
+        <div class="set-pane" id="set-pane-affichage">
+          <div>
+            <div class="set-label">Taille du texte</div>
+            <div class="set-textsize-row" style="margin-top:10px;">
+              <button class="set-textsize-btn" data-size="small" onclick="textSizeSet('small')">A<br><span style="font-size:.7rem;opacity:.6">Petit</span></button>
+              <button class="set-textsize-btn active" data-size="normal" onclick="textSizeSet('normal')">A<br><span style="font-size:.7rem;opacity:.6">Normal</span></button>
+              <button class="set-textsize-btn" data-size="large" onclick="textSizeSet('large')" style="font-size:1.1rem;">A<br><span style="font-size:.7rem;opacity:.6">Grand</span></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RACCOURCIS -->
+        <div class="set-pane" id="set-pane-raccourcis">
+          <div>
+            <div class="set-label" style="margin-bottom:10px;">Raccourcis clavier</div>
+            <div class="set-shortcut-row"><kbd>Échap</kbd><span>Ouvrir / fermer les paramètres</span></div>
+            <div class="set-shortcut-row"><kbd>Ctrl</kbd>&nbsp;+&nbsp;<kbd>N</kbd><span>Nouvelle manche (depuis les résultats)</span></div>
+            <div class="set-shortcut-row"><kbd>Entrée</kbd><span>Valider la réponse (interrogatoire)</span></div>
+            <div class="set-shortcut-row"><kbd>Espace</kbd><span>Continuer (écran de passation)</span></div>
+            <div class="set-shortcut-row"><kbd>Entrée</kbd><span>Rejoindre / valider (lobby)</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="preuve-overlay">
   <div id="preuve-card">
     <div id="preuve-scan"></div>
