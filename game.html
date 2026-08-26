@@ -13890,16 +13890,33 @@ if(_SPEC_IS_SPEC){
   if(_SPEC_REMOTE_CODE){
     /* Spectateur distant : écoute Firebase */
     if(_sFtxt)_sFtxt.textContent='Connexion Firebase — code : '+_SPEC_REMOTE_CODE+' …';
-    if(onlineInitFirebase()&&online.db){
-      online.db.ref('rooms/'+_SPEC_REMOTE_CODE+'/specSnap').on('value',function(snap){
-        var d=snap.val();
-        if(d&&d.ts&&d.ts!==_specLastTs){
-          _specLastTs=d.ts;
-          _specRender(d);
-          if(_sFtxt)_sFtxt.textContent='En direct · '+d.phaseLabel+' · Code '+_SPEC_REMOTE_CODE;
-        }
-      });
+    var _specFbRetries=0;
+    function _specConnectFirebase(){
+      if(onlineInitFirebase()&&online.db){
+        if(_sFtxt)_sFtxt.textContent='En direct · code '+_SPEC_REMOTE_CODE+' — en attente de données…';
+        online.db.ref('rooms/'+_SPEC_REMOTE_CODE+'/specSnap').on('value',function(snap){
+          var d=snap.val();
+          if(!d){
+            if(_sFtxt)_sFtxt.textContent='En attente de la partie · code '+_SPEC_REMOTE_CODE+'…';
+            return;
+          }
+          if(d.ts&&d.ts!==_specLastTs){
+            _specLastTs=d.ts;
+            _specRender(d);
+            if(_sFtxt)_sFtxt.textContent='En direct · '+d.phaseLabel+' · Code '+_SPEC_REMOTE_CODE;
+          }
+        },function(err){
+          if(_sFtxt)_sFtxt.textContent='⚠ Erreur Firebase : '+err.message;
+        });
+      } else if(_specFbRetries<20){
+        _specFbRetries++;
+        if(_sFtxt)_sFtxt.textContent='Connexion Firebase… ('+_specFbRetries+'/20) code : '+_SPEC_REMOTE_CODE;
+        setTimeout(_specConnectFirebase,500);
+      } else {
+        if(_sFtxt)_sFtxt.textContent='⚠ Impossible de se connecter à Firebase — code : '+_SPEC_REMOTE_CODE;
+      }
     }
+    setTimeout(_specConnectFirebase,200);
   } else {
     if(_sFtxt)_sFtxt.textContent='Spectateur prêt — partie sur l\'autre onglet';
   }
