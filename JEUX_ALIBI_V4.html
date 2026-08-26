@@ -292,6 +292,17 @@ html[data-theme="western"] .logo-title{text-shadow:0 0 16px rgba(212,88,26,.55),
 .modal-title{font-family:var(--font-display);font-weight:700;font-size:1.1rem;letter-spacing:.1em;text-transform:uppercase;color:var(--paper);margin-bottom:12px;}
 .modal-body{font-size:.85rem;line-height:1.75;color:var(--paper2);margin-bottom:20px;}
 
+/* ══ MODAL QR SPECTATEUR ══ */
+#modal-qr{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;}
+#modal-qr.active{display:flex;}
+.qr-box{background:var(--coal);border:1px solid rgba(var(--gold-rgb),.4);border-top:2px solid var(--gold);border-radius:10px;padding:28px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:300px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.6);}
+.qr-title{font-family:var(--font-display);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+.qr-img-wrap{background:#fff;border-radius:8px;padding:12px;line-height:0;}
+.qr-hint{font-size:.72rem;color:var(--paper2);text-align:center;line-height:1.5;}
+.qr-url-txt{font-size:.55rem;color:var(--muted);text-align:center;word-break:break-all;max-width:240px;font-family:var(--font-mono);}
+.lobby-qr-btn{background:none;border:1px solid rgba(var(--gold-rgb),.4);border-radius:4px;color:var(--gold);cursor:pointer;font-size:.8rem;padding:3px 9px;transition:all .2s;line-height:1.6;}
+.lobby-qr-btn:hover{background:var(--gold-dim);border-color:var(--gold);}
+
 /* ══ SCENARIO PICKER MODAL ══ */
 .sc-picker-modal{background:var(--coal);border:var(--line);border-top:2px solid var(--gold);border-radius:var(--r);padding:0;max-width:720px;width:95%;max-height:82vh;display:flex;flex-direction:column;overflow:hidden;position:relative;box-shadow:0 24px 70px rgba(0,0,0,.6);}
 .sc-picker-header{padding:20px 24px 16px;border-bottom:var(--line);}
@@ -2339,6 +2350,7 @@ html[data-card-skin="bois"] .card{background:radial-gradient(circle 300px at var
         <span class="lobby-code-label">Code de partie</span>
         <span class="lobby-code-val" id="lobby-code-display" onclick="lobbyСopyCode()" title="Cliquer pour copier">—</span>
         <span style="font-size:.65rem;color:var(--muted);letter-spacing:.06em;">cliquer pour copier</span>
+        <button class="lobby-qr-btn" id="lobby-qr-btn" onclick="showQRCode()" title="QR code spectateur" style="display:none">📺 QR</button>
       </div>
     </div>
     <div class="lobby-players-grid">
@@ -4909,6 +4921,24 @@ function lobbyLaunch() {
 function lobbySetCode(code) {
   var el = document.getElementById('lobby-code-display');
   if (el) el.textContent = code || '—';
+  var qrBtn = document.getElementById('lobby-qr-btn');
+  if (qrBtn) qrBtn.style.display = code ? '' : 'none';
+}
+
+function showQRCode() {
+  var code = online.roomId;
+  if (!code) { toast('Aucune partie en cours', 'warn'); return; }
+  var url = 'https://adrienlzr.github.io/ALIBI/JEUX_ALIBI_V4.html#spectateur-' + code;
+  var qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?data=' + encodeURIComponent(url) + '&size=200x200&margin=10&bgcolor=ffffff&color=0d0d0d';
+  var img = document.getElementById('qr-img');
+  var urlTxt = document.getElementById('qr-url-txt');
+  if (img) img.src = qrSrc;
+  if (urlTxt) urlTxt.textContent = url;
+  document.getElementById('modal-qr').classList.add('active');
+}
+
+function qrClose() {
+  document.getElementById('modal-qr').classList.remove('active');
 }
 function lobbySetHostName(name) {
   var el = document.getElementById('lobby-name-host');
@@ -14302,6 +14332,19 @@ if(_SPEC_IS_SPEC){
       </table>
 
     </div>
+  </div>
+</div>
+
+<!-- MODAL QR SPECTATEUR -->
+<div id="modal-qr" onclick="if(event.target===this)qrClose()">
+  <div class="qr-box">
+    <div class="qr-title">📺 Observer en spectateur</div>
+    <div class="qr-img-wrap">
+      <img id="qr-img" src="" width="200" height="200" alt="QR Code">
+    </div>
+    <div class="qr-hint">Scanne avec ton téléphone<br>pour rejoindre en spectateur</div>
+    <div class="qr-url-txt" id="qr-url-txt"></div>
+    <button class="btn btn-ghost btn-sm" onclick="qrClose()">✕ Fermer</button>
   </div>
 </div>
 
