@@ -2820,7 +2820,7 @@ html[data-card-skin="bois"] .card{background:radial-gradient(circle 300px at var
                 <label class="mode-pill-toggle" onclick="event.stopPropagation()"><input type="checkbox" id="blitz-mode" onchange="blitzToggle();updatePillStates();"><span class="mode-pill-slider"></span></label>
                 <div class="mode-pill-text">
                   <span class="mode-pill-name">⚡ Blitz</span>
-                  <span class="mode-pill-sub" id="blitz-pill-sub">20 sec / question</span>
+                  <span class="mode-pill-sub">20 sec / question</span>
                 </div>
               </label>
               <label class="mode-pill" id="pill-impostor" onclick="setTimeout(function(){impostorToggle();updatePillStates();},0)">
@@ -2839,18 +2839,6 @@ html[data-card-skin="bois"] .card{background:radial-gradient(circle 300px at var
                 </div>
               </label>
               -->
-            </div>
-            <div id="blitz-dur-row" style="display:none;margin-top:12px">
-              <div class="field-group">
-                <label class="field-label">⚡ Durée blitz par question</label>
-                <div class="timer-stepper">
-                  <button class="stepper-btn" onclick="stepBlitz(-10)">−10</button>
-                  <button class="stepper-btn" onclick="stepBlitz(-5)">−5</button>
-                  <div class="stepper-val" id="blitz-dur-display">20s</div>
-                  <button class="stepper-btn stepper-btn-plus" onclick="stepBlitz(5)">+5</button>
-                  <button class="stepper-btn stepper-btn-plus" onclick="stepBlitz(10)">+10</button>
-                </div>
-              </div>
             </div>
             <div class="difficulty-row">
               <div class="difficulty-group">
@@ -3073,8 +3061,7 @@ html[data-card-skin="bois"] .card{background:radial-gradient(circle 300px at var
       <div class="row between" style="flex-wrap:wrap;gap:10px;">
         <!-- Gauche : actions secondaires -->
         <div class="row" style="gap:8px;flex-wrap:wrap;">
-          <button class="btn btn-ghost btn-sm" onclick="startResultsReveal()">🎬 Revoir</button>
-          <button class="btn btn-ghost btn-sm" onclick="openCredits()">🎞 Générique</button>
+          <button class="btn btn-ghost btn-sm" onclick="openCredits()">🎬 Générique</button>
           <button class="btn btn-ghost btn-sm" onclick="exportTxt()">💾 Export TXT</button>
           <button class="btn btn-ghost btn-sm" onclick="historyOpen()">📅 Historique</button>
           <button class="btn btn-steel btn-sm" onclick="showScreen('home')">🏠 Accueil</button>
@@ -8726,15 +8713,6 @@ function updatePillStates() {
 var blitzActive = false;
 var blitzInterval = null;
 var blitzSeconds = 20;
-var blitzDuration = 20;
-
-function stepBlitz(delta) {
-  blitzDuration = Math.max(5, Math.min(120, blitzDuration + delta));
-  var disp = document.getElementById('blitz-dur-display');
-  if (disp) disp.textContent = blitzDuration + 's';
-  var sub = document.getElementById('blitz-pill-sub');
-  if (sub) sub.textContent = blitzDuration + ' sec / question';
-}
 
 function getBlitzCheckbox() {
   return document.getElementById('blitz-mode');
@@ -8744,14 +8722,12 @@ function blitzToggle(forceValue) {
   var nextValue = (typeof forceValue === 'boolean') ? forceValue : !!(checkbox && checkbox.checked);
   blitzActive = nextValue;
   if (checkbox && checkbox.checked !== nextValue) checkbox.checked = nextValue;
-  var durRow = document.getElementById('blitz-dur-row');
-  if (durRow) durRow.style.display = blitzActive ? '' : 'none';
 }
 
 function blitzStartQuestion() {
   if (!blitzActive) return;
   blitzClear();
-  blitzSeconds = blitzDuration;
+  blitzSeconds = 20;
   var el = document.getElementById('blitz-timer');
   el.classList.add('active');
   el.classList.remove('urgent');
@@ -10132,7 +10108,7 @@ function aiApply() {
     var mo = new MutationObserver(function(){
       var v = parseInt(blitzEl.textContent, 10);
       if (isNaN(v)) return;
-      var pct = Math.max(0, Math.min(100, (v / (blitzDuration || 20)) * 100));
+      var pct = Math.max(0, Math.min(100, (v / 20) * 100));
       blitzEl.style.setProperty('--pct', pct);
     });
     mo.observe(blitzEl, { childList: true, characterData: true, subtree: true });
