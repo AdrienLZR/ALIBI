@@ -4928,7 +4928,7 @@ function lobbySetCode(code) {
 function showQRCode() {
   var code = online.roomId;
   if (!code) { toast('Aucune partie en cours', 'warn'); return; }
-  var url = 'https://adrienlzr.github.io/ALIBI/JEUX_ALIBI_V4.html#spectateur-' + code;
+  var url = 'https://adrienlzr.github.io/ALIBI/game.html#spectateur-' + code;
   var qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?data=' + encodeURIComponent(url) + '&size=200x200&margin=10&bgcolor=ffffff&color=0d0d0d';
   var img = document.getElementById('qr-img');
   var urlTxt = document.getElementById('qr-url-txt');
