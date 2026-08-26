@@ -13845,7 +13845,21 @@ function _specPlayIntro(onDone){
 /* ─── RÉCEPTEUR (onglet #spectateur) ─── */
 if(_SPEC_IS_SPEC){
   /* ── Intro cinématique ── */
-  _specPlayIntro();
+  /* Sur mobile/URL-hash : cinématique simplifiée pour éviter les bugs de timers */
+  if(_SPEC_REMOTE_CODE){
+    var _siEl=document.getElementById('spec-intro');
+    var _siLd=document.getElementById('si-loading');
+    if(_siLd)_siLd.textContent='Acquisition du signal…';
+    setTimeout(function(){
+      if(_siLd){_siLd.textContent='✓ Signal établi';_siLd.classList.add('ok');}
+    },1200);
+    setTimeout(function(){
+      if(_siEl){_siEl.style.transition='opacity .5s';_siEl.style.opacity='0';}
+      setTimeout(function(){if(_siEl)_siEl.style.display='none';},550);
+    },1800);
+  } else {
+    _specPlayIntro();
+  }
 
   /* Horloge principale */
   setInterval(function(){
